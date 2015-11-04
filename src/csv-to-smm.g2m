@@ -1,0 +1,181 @@
+rule 'createModel'
+	from ccompilationUnit sf
+	to smm::SmmModel 
+	queries
+		file : //#file;
+		recs : /file/logfile/#record;
+		modelName: /file//#info_item[0];
+	mappings
+		name = modelName.NAME + " Workload";
+		description = "Built from " + file.path;
+		observations = recs;
+		librairies = execute buildLibrary file;
+end_rule
+
+rule 'buildLibrary'
+	from file f
+	to smm::MeasureLibrary 
+	queries
+	mappings
+		name = "System Measures";
+		measureElements = execute buildDirectMeasure1 f;
+		measureElements = execute buildDirectMeasure2 f;
+		measureElements = execute buildCounting f;
+		measureElements = execute buildCharacteristic1 f;
+		measureElements = execute buildCharacteristic2 f;
+		measureElements = execute buildScope f;
+end_rule
+
+rule 'buildDirectMeasure1'
+	from file f
+	to smm::DirectMeasure
+	queries
+	mappings
+		name = "Secondary Storage Usage;POSTPROCESS_REF:trait,System Measures.Size,librairies.measureElements;;POSTPROCESS_REF:scope,System Measures.English Language Site,librairies.measureElements;";
+        unit = "MB";
+end_rule
+
+rule 'buildDirectMeasure2'
+	from file f
+	to smm::DirectMeasure
+	queries
+		entityType: /f//#info_item[2];
+	mappings
+		name = "Unused Entities;POSTPROCESS_REF:trait,System Measures.Number,librairies.measureElements;;POSTPROCESS_REF:scope,System Measures.English Language Site,librairies.measureElements;";
+        unit = entityType.NAME;
+end_rule
+
+rule 'buildCounting'
+	from file f
+	to smm::Counting
+	queries
+		entityType: /f//#info_item[2];
+	mappings
+		name = "Entities;POSTPROCESS_REF:trait,System Measures.Number,librairies.measureElements;;POSTPROCESS_REF:scope,System Measures.English Language Site,librairies.measureElements;";
+        unit = entityType.NAME;
+end_rule
+
+rule 'buildCharacteristic1'
+	from file f
+	to smm::Characteristic
+	queries
+	mappings
+		name="Number";
+end_rule
+
+rule 'buildCharacteristic2'
+	from file f
+	to smm::Characteristic
+	queries
+	mappings
+		name="Size";
+end_rule
+
+rule 'buildScope'
+	from file f
+	to smm::Scope
+	queries
+		scopeName: /f//#info_item[1];
+	mappings
+		name = scopeName.NAME;
+		class = "java.lang.String";
+end_rule
+
+rule 'createObservation'
+	from record r
+	to smm::Observation 
+	queries
+		t : /r//#timestamp1;
+		size: /r//#measurement5;
+	mappings
+		name = r.NAME;
+		whenObserved = ext DateCastExtension(t);
+		observedMeasures = execute createObservedMeasureSizeUE size;
+		observedMeasures = execute createObservedMeasureDB r;
+		observedMeasures = execute createObservedMeasureRLogs r;
+end_rule
+
+rule 'createObservedMeasureSizeUE'
+	from measurement5 m5
+	to smm::ObservedMeasure 
+	queries
+	mappings
+		name = "Database Size;POSTPROCESS_REF:measure,System Measures.Secondary Storage Usage,librairies.measureElements;";
+		measurements = execute createDirectMeasurementSize m5;
+end_rule
+
+rule 'createDirectMeasurementSize'
+	from measurement5 m5
+	to smm::DirectMeasurement 
+	queries
+		m: /m5/#measurement;
+	mappings
+		name = "Size";
+		value = ext DoubleCastExtension(m);
+end_rule
+
+rule 'createObservedMeasureRLogs'
+	from record r
+	to smm::ObservedMeasure 
+	queries
+		entityCount: /r//#measurement1;
+		entityReads: /r//#measurement2;
+		entityWrites: /r//#measurement3;
+	mappings
+		name = "Database Workload;POSTPROCESS_REF:measure,System Measures.Entities,librairies.measureElements;";
+		measurements = execute createDirectMeasurement1 entityCount;
+		measurements = execute createDirectMeasurement2 entityReads;
+		measurements = execute createDirectMeasurement3 entityWrites;
+end_rule
+
+rule 'createObservedMeasureDB'
+	from record r
+	to smm::ObservedMeasure 
+	queries
+		unusedEntities: /r//#measurement4;
+	mappings
+		name = "Legacy Data;POSTPROCESS_REF:measure,System Measures.Unused Entities,librairies.measureElements;";
+		measurements = execute createDirectMeasurement4 unusedEntities;
+end_rule
+
+
+rule 'createDirectMeasurement1'
+	from measurement1 m1
+	to smm::DirectMeasurement 
+	queries
+		m: /m1/#measurement;
+	mappings
+		name = "Entity Count";
+		value = ext DoubleCastExtension(m);
+end_rule
+
+rule 'createDirectMeasurement2'
+	from measurement1 m2
+	to smm::DirectMeasurement 
+	queries
+		m: /m2/#measurement;
+	mappings
+		name = "Entity Reads";
+		value = ext DoubleCastExtension(m);
+end_rule
+
+rule 'createDirectMeasurement3'
+	from measurement1 m3
+	to smm::DirectMeasurement 
+	queries
+		m: /m3/#measurement;
+	mappings
+		name = "Entity Writes";
+		value = ext DoubleCastExtension(m);
+end_rule
+
+rule 'createDirectMeasurement4'
+	from measurement1 m4
+	to smm::DirectMeasurement 
+	queries
+		m: /m4/#measurement;
+	mappings
+		name = "Unused Entities";
+		value = ext DoubleCastExtension(m);
+end_rule
+

@@ -1,0 +1,30 @@
+grammar CSV;
+
+logfile : model_info record* EOF;
+model_info:  info_item CA  info_item CA info_item '\n';
+info_item: QUOTE NAME QUOTE;
+
+record:  NAME data '\n';
+data: timestamp1 timestamp2 measurement1 measurement2 measurement3 measurement4 measurement5;
+
+measurement1: measurement;
+measurement2: measurement;
+measurement3: measurement;
+measurement4: measurement;
+measurement5: measurement 'MB'?;
+measurement : CA VALUE;
+
+NAME : ('a'..'z' | 'A'..'Z') ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' | ' ')*;
+timestamp1:timestamp;
+timestamp2:timestamp;
+timestamp: CA DATE TIME;
+
+DATE: '20' ('0' .. '9') ('0' .. '9') '-' ('0' .. '1') ('0' .. '9') '-' ('0' .. '3') ('0' .. '9');
+TIME: ('0' .. '2') ('0' .. '9') ':' ('0' .. '5') ('0' .. '9') ':' ('0' .. '5') ('0' .. '9');
+
+VALUE : ('0' .. '9')*;
+CA : ',';
+QUOTE : '\'';
+
+//Hidden Tokens
+WS : (' ' | '\t' |'\r')+ {$channel=HIDDEN;};

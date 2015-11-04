@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="src" path="extensions"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry exported="true" kind="lib" path="lib/ant.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/antlr3-antTask.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-lang3-3.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gts.modernization.grammar2Model.antTasks.jar" sourcepath="C:/Users/martyn.ellison/Desktop/Gra2MoLDinamicInterpreterAntTask.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.emf.common_2.3.0.v200706262000.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.emf.ecore_2.3.0.v200706262000.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.emf.ecore.xmi_2.3.0.v200706262000.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.gmt.modisco.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/stringtemplate-3.1b1.jar"/>
+	<classpathentry kind="lib" path="lib/common-2.3.0-v200706262000.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="lib/grep4j-1.8.7.jar"/>
+	<classpathentry kind="lib" path="lib/ecore-2.3.0-v200706262000.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.cdo_2.0.0.v200906160459.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.cdo_4.2.0.v20130612-0849.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore.xmi-2.5.0.v20100521-1846.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common_3.5.0.v20090520-1800.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.net4j.util_2.0.0.v200906160348.jar"/>
+	<classpathentry kind="lib" path="lib/gts.modernization.grammar2Model.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-3.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-runtime-3.0.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

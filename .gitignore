@@ -1,0 +1,7 @@
+/bin/
+/gen/
+debug.txt
+CSTModel.ecore
+gra2molModel.ecore
+WorkloadModel.xmi
+StructureModel.xmi

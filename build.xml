@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="SQLModel" default="build">
+
+	<!-- Folders -->
+    <property name="binDir" value="bin"/>
+    <property name="extDir" value="extensions"/>
+    <property name="genDir" value="gen"/>
+    <property name="inputDir" value="sample-inputs"/>
+	<property name="libDir" location="lib" />
+    <property name="metamodelsDir" value="metamodels"/>
+    <property name="srcDir" value="src"/>
+    <property name="templatesDir" value="templates"/>
+    
+    <!-- Files -->
+	<property name="csvFile" value="loadmeasurements.csv"/>
+    <property name="ddlEnrichedGrammar" value="${genDir}/DDL.ge3"/>
+    <property name="ddlGrammar" value="${srcDir}/DDL.g3"/>
+    <property name="ddlMappingRules" value="${srcDir}/sqlddl-to-kdm.g2m"/>
+    <property name="G2GeTemplate" value="${templatesDir}/G2Ge.stg"/>
+    <property name="kdmMetamodel" value="${metamodelsDir}/kdm.ecore"/>
+	<property name="kdmOutputFile" value="StructureModel.xmi"/>
+    <property name="metricsEnrichedGrammar" value="${genDir}/CSV.ge3"/>
+    <property name="metricsGrammar" value="${srcDir}/CSV.g3"/>
+    <property name="metricsMappingRules" value="${srcDir}/csv-to-smm.g2m"/>
+	<property name="smmOutputFile" value="WorkloadModel.xmi"/>
+	<property name="sqlFile" value="schema.sql"/>
+	<property name="smmMetamodel" value="${metamodelsDir}/smm.ecore"/>
+
+	<!-- Properties --> 
+    <property name="ddlGrammarName" value="DDL"/>
+    <property name="ddlGrammarMainRule" value="statements"/>
+    <property name="ddlMetamodelName" value="KDM"/>
+    <property name="metricsGrammarName" value="CSV"/>
+    <property name="metricsGrammarMainRule" value="logfile"/>
+    <property name="metricsMetamodelName" value="SMM"/>
+	<property name="javaVersion" value="1.7"/>
+
+	<!-- Dependancies --> 
+    <path id="class.path">
+    	<pathelement location="${libDir}/antlr-2.7.7.jar"/>
+    	<pathelement location="${libDir}/antlr-3.0.1.jar"/>
+    	<pathelement location="${libDir}/antlr-runtime-3.0.1.jar"/>
+    	<pathelement location="${libDir}/commons-lang3-3.4.jar"/>
+    	<pathelement location="${libDir}/stringtemplate-3.1b1.jar"/>
+    	<pathelement location="${libDir}/antlr3-antTask.jar"/>
+    	<pathelement location="${libDir}/org.eclipse.emf.common_2.3.0.v200706262000.jar"/>
+        <pathelement location="${libDir}/org.eclipse.emf.ecore.xmi_2.3.0.v200706262000.jar"/>
+    	<pathelement location="${libDir}/org.eclipse.emf.ecore_2.3.0.v200706262000.jar"/>
+     	<pathelement location="${libDir}/gts.modernization.grammar2Model.antTasks.jar"/>
+     	<pathelement location="${libDir}/gts.modernization.grammar2Model.jar"/>
+     	<pathelement location="${libDir}/org.eclipse.gmt.modisco.jar"/>
+     	<pathelement location="${libDir}/ant.jar"/>
+     	<pathelement location="${binDir}/."/>
+   	</path>
+   	
+	<!-- Targets -->
+   	<target name="clean">
+		<delete dir="${binDir}"/>
+		<delete dir="${genDir}"/>
+		<delete file="gra2molModel.ecore"/>
+		<delete file="debug.txt"/>
+		<delete file="CSTModel.ecore"/>
+		<delete file="${kdmOutputFile}"/>
+   		<delete file="${smmOutputFile}"/>
+	</target>	
+	
+	<target name="buildExtensions">
+		<mkdir dir="${binDir}"/>
+		<javac srcdir="${extDir}"
+			destdir="${binDir}"
+		    debug="on"
+		    source="${javaVersion}"
+			includeantruntime="false">
+			<classpath>
+				<path refid="class.path" />
+			</classpath>
+		</javac>
+		<javac srcdir="${srcDir}"
+			destdir="${binDir}"
+		    debug="on"
+			includeantruntime="false"
+		    source="${javaVersion}"
+			includes="uk/ac/york/mhe504/dblm/ModelRefinerAntTask.java">
+			<classpath>
+				<path refid="class.path" />
+			</classpath>
+		</javac>
+	</target>
+		
+	<target name="enrichGrammars">
+		<mkdir dir="${genDir}"/>
+		<taskdef name="G2Ge" classname="gts.modernization.util.G2GeAntTask" classpathref="class.path"/>
+		<G2Ge pathGrammar="${ddlGrammar}" 
+			  pathResult="${ddlEnrichedGrammar}" 
+			  pathTemplates="${G2GeTemplate}"/>
+		<G2Ge pathGrammar="${metricsGrammar}" 
+			  pathResult="${metricsEnrichedGrammar}" 
+			  pathTemplates="${G2GeTemplate}"/>
+	</target>
+
+	<target name="generateParsers">
+		<taskdef name="antlr3" classname="org.apache.tools.ant.antlr.ANTLR3" classpathref="class.path"/>
+		<antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" 
+		 	target="${ddlEnrichedGrammar}" 
+		 	outputdirectory="${genDir}" 
+		 	libdirectory="${libDir}" 
+		 	multithreaded="true" 
+		 	report="false" 
+		 	depend="true" 
+		 	profile="false">          
+				<classpath>
+					<path refid="class.path" />
+				</classpath>
+		</antlr3>
+		<antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr" 
+		 	target="${metricsEnrichedGrammar}" 
+		 	outputdirectory="${genDir}" 
+		 	libdirectory="${libDir}" 
+		 	multithreaded="true" 
+		 	report="false" 
+		 	depend="true" 
+		 	profile="false">          
+				<classpath>
+					<path refid="class.path" />
+				</classpath>
+		</antlr3>
+		
+		<!-- Bug fixed in created parser  -->
+		<replace file="${genDir}/${ddlGrammarName}Parser.java" token=".getTemplate()" value=""/>
+		<replace file="${genDir}/${metricsGrammarName}Parser.java" token=".getTemplate()" value=""/>
+		
+		<mkdir dir="${binDir}"/>
+		<javac srcdir="${genDir}"
+			destdir="${binDir}"
+		    debug="on"
+			includeantruntime="false"
+		    source="${javaVersion}">
+			<classpath>
+				<path refid="class.path" />
+			</classpath>
+		</javac>
+	</target>
+
+	
+	<target name="modelExtraction">
+				
+		<taskdef name="Gra2MoLDinamicInterpreter" classname="gts.modernization.util.Gra2MoLDinamicInterpreterAntTask" classpathref="class.path"/>
+		
+		<Gra2MoLDinamicInterpreter 
+					pathSourceView="${ddlMappingRules}" 
+					pathMetamodel="${kdmMetamodel}"
+					targetMetamodel="${ddlMetamodelName}"
+					className="${ddlGrammarName}Test"
+					result="${kdmOutputFile}"
+					grammar="${ddlGrammarName}" 
+					mainRule="${ddlGrammarMainRule}" 
+					caseSensitive="true">
+			<fileset dir="${inputDir}" includes="${sqlFile}"/>
+		</Gra2MoLDinamicInterpreter>
+		<Gra2MoLDinamicInterpreter 
+					pathSourceView="${metricsMappingRules}" 
+					pathMetamodel="${smmMetamodel}"
+					targetMetamodel="${metricsMetamodelName}"
+					className="${metricsGrammarName}Test"
+					result="${smmOutputFile}"
+					grammar="${metricsGrammarName}" 
+					mainRule="${metricsGrammarMainRule}" 
+					caseSensitive="true">
+			<fileset dir="${inputDir}" includes="${csvFile}"/>
+		</Gra2MoLDinamicInterpreter>
+		
+	</target>
+	
+	<target name="modelRefinement">
+		<taskdef name="ModelRefinerAntTask" classname="uk.ac.york.mhe504.dblm.ModelRefinerAntTask" classpathref="class.path"/>
+		<ModelRefinerAntTask modelPath="${kdmOutputFile}"/>
+		<ModelRefinerAntTask modelPath="${smmOutputFile}"/>     
+	</target>
+
+	<target name="build" depends="clean, buildExtensions, enrichGrammars, generateParsers, modelExtraction, modelRefinement">
+		<tstamp/>
+	</target>
+	
+	<target name="kdmOnly">
+		<taskdef name="Gra2MoLDinamicInterpreter" classname="gts.modernization.util.Gra2MoLDinamicInterpreterAntTask" classpathref="class.path"/>
+		<Gra2MoLDinamicInterpreter 
+					pathSourceView="${ddlMappingRules}" 
+					pathMetamodel="${kdmMetamodel}"
+					targetMetamodel="${ddlMetamodelName}"
+					className="${ddlGrammarName}Test"
+					result="${kdmOutputFile}"
+					grammar="${ddlGrammarName}" 
+					mainRule="${ddlGrammarMainRule}" 
+					caseSensitive="true">
+			<fileset dir="${inputDir}" includes="${sqlFile}"/>
+		</Gra2MoLDinamicInterpreter>
+		<taskdef name="ModelRefinerAntTask" classname="uk.ac.york.mhe504.dblm.ModelRefinerAntTask" classpathref="class.path"/>
+		<ModelRefinerAntTask modelPath="${kdmOutputFile}"/>
+	</target>
+	
+	<target name="smmOnly">
+		<taskdef name="Gra2MoLDinamicInterpreter" classname="gts.modernization.util.Gra2MoLDinamicInterpreterAntTask" classpathref="class.path"/>
+		<Gra2MoLDinamicInterpreter 
+					pathSourceView="${metricsMappingRules}" 
+					pathMetamodel="${smmMetamodel}"
+					targetMetamodel="${metricsMetamodelName}"
+					className="${metricsGrammarName}Test"
+					result="${smmOutputFile}"
+					grammar="${metricsGrammarName}" 
+					mainRule="${metricsGrammarMainRule}" 
+					caseSensitive="true">
+			<fileset dir="${inputDir}" includes="${csvFile}"/>
+		</Gra2MoLDinamicInterpreter>
+		<taskdef name="ModelRefinerAntTask" classname="uk.ac.york.mhe504.dblm.ModelRefinerAntTask" classpathref="class.path"/>
+		<ModelRefinerAntTask modelPath="${smmOutputFile}"/>
+	</target>
+	
+</project>

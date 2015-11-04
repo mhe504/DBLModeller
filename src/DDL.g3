@@ -1,0 +1,172 @@
+grammar DDL;
+
+options{
+k=*;
+} 
+
+//Key Words
+ADD: 'ADD';
+ALTER: 'ALTER';
+AUTO_INCREMENT : 'AUTO_INCREMENT';
+AVG_ROW_LENGTH: 'AVG_ROW_LENGTH';
+CACHE: 'CACHE';
+CHARSET : 'CHARSET';
+COLLATE : 'COLLATE';
+COLUMN: 'COLUMN';
+COMMENT: 'COMMENT';
+CONSTRAINT: 'CONSTRAINT';
+CREATE : 'CREATE';
+CURRENT_TIMESTAMP : 'CURRENT_TIMESTAMP';
+DAY: 'DAY';
+DEFAULT : 'DEFAULT';
+ENABLE: 'ENABLE';
+ENGINE : 'ENGINE';
+FOREIGN: 'FOREIGN';
+FULLTEXT: 'FULLTEXT';
+INCREMENT_BY: 'INCREMENT BY';
+INDEX: 'INDEX';
+INDEXTYPE: 'INDEXTYPE';
+IS: 'IS';
+KEY : 'KEY';
+LOCALTIME: 'LOCALTIME';
+LOCALTIMESTAMP: 'LOCALTIMESTAMP';
+LOWER : 'LOWER';
+SECOND: 'SECOND';
+SEQUENCE : 'SEQUENCE';
+START_WITH: 'START WITH';
+SYSDATE: 'SYSDATE';
+SYS_EXTRACT_UTC_FUNC: 'SYS_EXTRACT_UTC';
+MAXVALUE: 'MAXVALUE';
+MAX_ROWS : 'MAX_ROWS';
+MINVALUE: 'MINVALUE';
+MODIFY: 'MODIFY';
+NOCACHE: 'NOCACHE';
+NOCYCLE: 'NOCYCLE';
+NOT: 'NOT';
+NOW: 'NOW';
+NOORDER: 'NOORDER';
+ON : 'ON';
+ORDER: 'ORDER';
+PRIMARY : 'PRIMARY';
+REFERENCES: 'REFERENCES';
+TABLE : 'TABLE';
+TO: 'TO';
+UNIQUE : 'UNIQUE';
+UNSIGNED: 'unsigned';
+UPDATE : 'UPDATE';
+
+// Data+Encoding Types
+NUMBER_TYPE: 'NUMBER';
+BINARY_TYPE: 'binary';
+BLOB_TYPE : 'tinyblob' | 'mediumblob' | 'blob' | 'longblob' | 'BLOB';
+CLOB_TYPE: 'CLOB';
+DECIMIAL_TYPE: 'decimal';
+DATETIME_TYPE: 'datetime' | 'DATE' | 'date' | 'time';
+DOUBLE_TYPE: 'double';
+ENUM_TYPE: 'enum';
+FLOAT_TYPE: 'float' | 'FLOAT';
+INNODB: 'InnoDB';
+INT_TYPE : 'tinyint' | 'smallint' | 'mediumint' | 'int' | 'bigint';
+INTERVAL_TYPE: 'INTERVAL';
+LATIN1 : 'latin1';
+LATIN1_GENERAL_CHAR_SET : 'latin1_general_cs';
+MEMORY: 'MEMORY';
+MYISAM: 'MyISAM';
+NULL_TYPE: 'NULL';
+TEXT_TYPE : 'mediumtext' | 'text' | 'longtext';
+TIMESTAMP_TYPE: 'timestamp' | 'TIMESTAMP';
+UTF8_TYPE: 'utf8';
+VARBINARY_TYPE : 'varbinary';
+VARCHAR_TYPE: 'varchar';
+VARCHAR2_TYPE: 'VARCHAR2';
+CHAR_TYPE: 'CHAR' | 'char';
+BYTE_TYPE: 'BYTE';
+
+STR : ('a'..'z' | 'A'..'Z' | ACCENTED_CHAR) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '$' | '#' | ACCENTED_CHAR )*;
+fragment ACCENTED_CHAR: '\u00BA' |
+                        '\u00E0' .. '\u00E5' |
+                        '\u00E7' .. '\u00EF' |
+                        '\u00F1' .. '\u00F6' | 
+                        '\u00F8' .. '\u00FD' | 
+                        '\u00FF' .. '\u0130' | 
+                        '\u0134' .. '\u0151';
+NUMBER: ('0' .. '9')+ | '*';
+SIGNED_NUMBER: ('0' .. '9')+ | (NEG ('1' .. '9')+);
+
+//Operators
+OB : '(';
+CB : ')';
+EQ : '=';
+SC : ';';
+Q1 : '`';
+Q2 : '\'';
+Q3 : '"';
+CA : ',';
+NEG : '-';
+COLON: ':';
+
+//Special Chars
+BINARY_NULL : '\\0';
+
+//Parser Rules
+statements: ddl_statements;
+ddl_statements: (create_sequence | create_table | create_index | alter_table | comment)*;
+comment: COMMENT ON (table_comment | column_comment) SC;
+table_comment: TABLE id IS comment_value;
+column_comment: COLUMN id '.' id IS comment_value;
+comment_value: Q2 (STR | (OB (STR | '.' | NEG | CA | COLON | NUMBER)+ CB) | '.' | NEG | CA | COLON | NUMBER)+ Q2;
+
+create_table :
+	CREATE TABLE id
+	OB
+		(column (CA column)*)
+		(CA primary_key)?
+		(CA unique_key)*
+		(CA key)*
+		(CA key_constraint)*
+	CB table_option* SC
+;
+
+create_index :
+	CREATE UNIQUE? INDEX id ON id (OB id (CA id)* CB)? (INDEXTYPE IS id '.' id)? SC;
+
+create_sequence :
+	CREATE SEQUENCE id ((MINVALUE NUMBER MAXVALUE NUMBER INCREMENT_BY NUMBER START_WITH NUMBER) | (INCREMENT_BY NUMBER START_WITH NUMBER MINVALUE NUMBER)) (NOCACHE | (NOORDER | ORDER) | NOCYCLE | CACHE NUMBER)* SC;
+	
+alter_table : ALTER TABLE (id '.')? id (ADD add | MODIFY modify | ENABLE CONSTRAINT id) (ON alter_params* ENABLE)? SC;
+add :  ( CONSTRAINT id (PRIMARY KEY OB id (CA id)* CB 'USING INDEX'? ENABLE | FOREIGN KEY OB id CB REFERENCES (id '.')? id OB id CB ENABLE? | UNIQUE OB id CB) | PRIMARY KEY OB id CB ENABLE );
+modify:  OB id NOT NULL_TYPE ENABLE CB;
+alter_params: 'DELETE SET NULL' | 'DELETE CASCADE' | 'DEFERRABLE' | 'INITIALLY DEFERRED';
+
+column : id type params*;
+
+id : Q1 (STR | TEXT_TYPE) Q1 | Q3 (PRIMARY | STR) Q3 | (SYS_EXTRACT_UTC_FUNC | LOWER ) OB Q3 STR Q3 CB | STR;
+val: Q2 (STR | TEXT_TYPE) Q2;
+
+type: ( (VARCHAR2_TYPE (OB NUMBER (CA BYTE_TYPE | CHAR_TYPE)? CB)?) | (BINARY_TYPE |  VARBINARY_TYPE  |  TEXT_TYPE  | BLOB_TYPE | VARCHAR_TYPE | CHAR_TYPE) (OB NUMBER CHAR_TYPE? CB)?) | ((INT_TYPE | NUMBER_TYPE | FLOAT_TYPE | DOUBLE_TYPE | DECIMIAL_TYPE)(OB NUMBER (CA NUMBER)? CB)? UNSIGNED?) | ENUM_TYPE OB (val CA?)+ CB | TIMESTAMP_TYPE (OB NUMBER CB)? 'WITH TIME ZONE'? | DATETIME_TYPE | CLOB_TYPE | INTERVAL_TYPE DAY OB NUMBER CB TO SECOND OB NUMBER CB;
+
+params: NOT NULL_TYPE | DEFAULT defaultvalue | AUTO_INCREMENT | ON UPDATE updatevalue | COLLATE LATIN1_GENERAL_CHAR_SET;
+defaultvalue: '\'' .* '\''  | NULL_TYPE | updatevalue | NUMBER | SIGNED_NUMBER;
+updatevalue: CURRENT_TIMESTAMP | LOCALTIMESTAMP | LOCALTIME | CURRENT_TIMESTAMP OB CB | NOW OB CB | LOCALTIME OB CB | LOCALTIMESTAMP OB CB | SYSDATE; 
+
+
+key : 		 (FULLTEXT? KEY id OB (id (OB NUMBER CB)? CA? )* CB);
+primary_key: (PRIMARY KEY OB (id CA?)* CB);
+unique_key:  (UNIQUE KEY id OB (id (OB NUMBER CB)? CA?)* CB);
+key_constraint: CONSTRAINT id (PRIMARY | FOREIGN) target_cols (REFERENCES id reference_columns)?;
+target_cols: KEY OB id (CA id)* CB;
+reference_columns:  OB id (CA id)* CB;
+
+table_option : ENGINE EQ (INNODB | MEMORY | MYISAM) | 
+			   AUTO_INCREMENT EQ NUMBER | 
+			   DEFAULT CHARSET EQ (UTF8_TYPE | BINARY_TYPE | LATIN1) |
+			   MAX_ROWS EQ NUMBER |
+			   AVG_ROW_LENGTH EQ NUMBER |
+			   COLLATE EQ LATIN1_GENERAL_CHAR_SET;
+
+//Hidden Tokens
+WS : (' ' | '\t' | '\n' | '\r')+ {$channel=HIDDEN;};
+SL_COMMENT : '--' ~('\n'|'\r')* '\r'? '\n' {$channel=HIDDEN;};
+ML_COMMENT : '/*' .* '*/' SC? {$channel=HIDDEN;};
+DROP_TABLE : 'DROP TABLE' .* SC {$channel=HIDDEN;};
+DROP_SEQUENCE : 'DROP SEQUENCE' .* SC {$channel=HIDDEN;};
