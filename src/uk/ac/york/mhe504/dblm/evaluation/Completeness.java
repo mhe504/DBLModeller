@@ -306,10 +306,15 @@ public class Completeness {
 				String[] parts = line.split("`");
 				ukNames.add(parts[1]);
 			}
-			else if (line.contains(" PRIMARY KEY (\""))
+			else if (line.contains("ADD PRIMARY KEY (\""))
 			{
 				String[] parts = line.split("\"");
 				ukNames.add(parts[3]);
+			}
+			else if (line.contains(" PRIMARY KEY (\""))
+			{
+				String[] parts = line.split("\"");
+				ukNames.add(parts[5]);
 			}
 			else if (line.contains("  PRIMARY KEY ("))
 			{
@@ -320,6 +325,11 @@ public class Completeness {
 			{
 				String[] parts = line.split("`");
 				keyNames.add(parts[1]);
+			}
+			else if (line.contains("CREATE UNIQUE INDEX \""))
+			{
+				String[] parts = line.split("\"");
+				ukNames.add(parts[5]);	
 			}
 			else if (line.contains(" INDEX \""))
 			{
@@ -398,7 +408,7 @@ public class Completeness {
 				String[] parts = line.split("\"");
 				colNames.add(parts[1]);
 			}
-			else if (line.matches("\\s\\s.*") && !line.contains("REFERENCES") && !line.contains("CONSTRAINT") && !line.contains("\"")&& !line.contains(";"))
+			else if (line.matches("\\s\\s\\w*.*") && !line.equals("  ") && !line.contains("REFERENCES") && !line.contains("CONSTRAINT") && !line.contains("\"")&& !line.contains(";"))
 			{
 				String[] parts = line.split(" ");
 				colNames.add(parts[2]);
