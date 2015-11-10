@@ -155,11 +155,8 @@ rule 'mapColComment'
 	from column_comment com
 	to kdm::kdm::Annotation
 	queries
-		tableName : /com/#id[0];
-		colName : /com/#id[1];
-		commentText : /com/#comment_value;
 	mappings
-		text  = ext NodeToString(commentText, com);
+		text  = ext NodeToString(com);
 end_rule
 
 rule 'mapTblComment'
@@ -167,9 +164,8 @@ rule 'mapTblComment'
 	to kdm::kdm::Annotation
 	queries
 		tableName : /com/#id[0];
-		commentText : /com/#comment_value;
 	mappings
-		text  = ext NodeToString(commentText, tableName);
+		text  = ext NodeToString(com, tableName);
 end_rule
 
 rule 'mapSequence'
