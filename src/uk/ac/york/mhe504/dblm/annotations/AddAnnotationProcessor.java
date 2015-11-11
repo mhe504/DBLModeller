@@ -23,6 +23,28 @@ public class AddAnnotationProcessor extends AbstractAnnotationProcessor {
 	}
 	
 	public void executeAddAnnotations() {
+		String[][] addStatements2 =  new String[addStatements.length][2];
+		int x=0;
+		
+		for(int i=0; i < addStatements.length; i++)
+		{
+			if (addStatements[i][1].contains("ADD:"))
+			{
+				addStatements2[x][0] = addStatements[i][0];
+				addStatements2[x][1] = addStatements[i][1];
+				x++;
+			}
+		}
+		for(int i=0; i < addStatements.length; i++)
+		{
+			if (addStatements[i][1].contains("ADDH:"))
+			{
+				addStatements2[x][0] = addStatements[i][0];
+				addStatements2[x][1] = addStatements[i][1];
+				x++;
+			}
+		}
+		addStatements=addStatements2;
 		for(int i=0; i < addStatements.length; i++)
 		{
 			
@@ -163,14 +185,14 @@ public class AddAnnotationProcessor extends AbstractAnnotationProcessor {
 					lst.add(addStatements[i][1]);
 					statementGroup.add(lst);
 					i++;
-				} while (i <  addStatements.length && !addStatements[i][1].contains(ADD_ALL_CHAR));
+				} while (i <  addStatements.length && !addStatements[i][1].contains(ADD_ALL_CHAR) && addStatements[i][1].contains("ADD:"));
 				i--;	
 				
 				if (statementGroup.size() > 1)
 				{
 					List<Integer> linesToRemove = new ArrayList<Integer>();
 					String nodeStatement = statementGroup.get(0).get(1);
-					linesToRemove.add(Integer.parseInt(statementGroup.get(0).get(0)));
+					//linesToRemove.add(Integer.parseInt(statementGroup.get(0).get(0)));
 					String target_parent_elem_name = nodeStatement.replace(ADD_STATEMENT_TYPE + START_CHAR, "").split(FIELD_SEPERATOR_CHAR)[0];
 					String target_parent_elem_type = nodeStatement.replace(ADD_STATEMENT_TYPE + START_CHAR, "").split(FIELD_SEPERATOR_CHAR)[1];
 					
@@ -178,7 +200,7 @@ public class AddAnnotationProcessor extends AbstractAnnotationProcessor {
 					for (int j = 1; j < statementGroup.size(); j++)
 					{
 						String[] leafStatement = statementGroup.get(j).get(1).replace(ADD_STATEMENT_TYPE + START_CHAR, "").split(FIELD_SEPERATOR_CHAR);
-						linesToRemove.add(Integer.parseInt(statementGroup.get(j).get(0)));
+						//linesToRemove.add(Integer.parseInt(statementGroup.get(j).get(0)));
 						
 						String new_elem_name = leafStatement[0];
 						String new_elem_type = leafStatement[1];
@@ -236,13 +258,13 @@ public class AddAnnotationProcessor extends AbstractAnnotationProcessor {
 									"=\"//@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@itemUnit." + row + "\"/>";
 
 							//Delete annotations
-							for (int lnr = 0; lnr <= linesToRemove.size(); lnr++)
+							/*for (int lnr = 0; lnr <= linesToRemove.size(); lnr++)
 							{
 								int removeAt = (int)linesToRemove.get(0);
 								modelFileLines.remove(removeAt);
 								decrementAllLineNumbers(removeAt,addStatements);
 								decrementAllLineNumbers(removeAt,refStatements);
-							}
+							}*/
 
 							if (!isDuplicateLine(newline))
 							{

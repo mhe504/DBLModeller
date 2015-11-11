@@ -143,9 +143,9 @@ public class Completeness {
 	
 	private static boolean areIdentical(List<String> list1, List<String> list2)
 	{
-		Set<Object> set1 = new HashSet<Object>();
+		Set<String> set1 = new HashSet<String>();
 		set1.addAll(list1);
-		Set<Object> set2 = new HashSet<Object>();
+		Set<String> set2 = new HashSet<String>();
 		set2.addAll(list2);
 		return set1.equals(set2);
 		
@@ -171,7 +171,7 @@ public class Completeness {
 			}
 			else if (line.contains("<dataElement xsi:type=\"data:IndexElement\""))
 			{
-				indexElementNames.add(line.split("\"")[3]);
+				indexElementNames.add(line.split("\"")[3].trim());
 			}
 			else if (line.contains("<dataElement xsi:type=\"data:KeyRelation\""))
 			{
@@ -321,6 +321,11 @@ public class Completeness {
 				String[] parts = line.split(" ");
 				ukNames.add(parts[5].replace(",", ""));
 			}
+			else if (line.contains("UNIQUE KEY `"))
+			{
+				String[] parts = line.split("`");
+				ukNames.add(parts[3].trim());
+			}
 			else if (line.contains(" KEY `"))
 			{
 				String[] parts = line.split("`");
@@ -389,11 +394,14 @@ public class Completeness {
 			}
 			else if (line.contains("FOREIGN KEY") && line.contains("REFERENCES"))
 			{
-				String[] parts = line.split("`");
+				String[] parts = line.split("REFERENCES");
+				String[] toparts = parts[1].split("`");
+				String[] fromparts = parts[0].split("`");
+				
 				String fromTable = tableNames.get(tableNames.size()-1);
-				String fromCol = parts[3];
-				String toTable =parts[5];
-				String toCol=parts[7];
+				String fromCol = fromparts[3];
+				String toTable =toparts[1];
+				String toCol=toparts[3];
 				
 				references.add(fromTable + "." + fromCol + ";" + toTable + "." + toCol);
 			}
@@ -401,7 +409,7 @@ public class Completeness {
 			{
 		
 				String[] parts = line.split("`");
-				colNames.add(parts[0]);
+				colNames.add(parts[1]);
 			}
 			else if (line.contains("	\"") || line.contains("    \""))
 			{

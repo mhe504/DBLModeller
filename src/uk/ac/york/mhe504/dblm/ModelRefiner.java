@@ -26,6 +26,12 @@ public class ModelRefiner{
 	private List<String> targetModel = new ArrayList<>();
 	private String modelPath;
 	private String[][] addAnnotations, refAnnotations;
+	
+	public static void main (String[] args)
+	{
+		
+		new ModelRefiner().execute("StructureModel.xmi");
+	}
 		
 	public void execute(String path){
 		
