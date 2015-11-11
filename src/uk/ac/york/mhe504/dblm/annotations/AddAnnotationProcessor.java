@@ -223,7 +223,21 @@ public class AddAnnotationProcessor extends AbstractAnnotationProcessor {
 							row = positions[1];
 							String ref1 = "//@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@dataElement." + row;
 							
+							if ("this".equals(new_elem_ref_property_2_value.split("\\.")[0]))
+							{
+								int lineNo = Integer.parseInt(statementGroup.get(j).get(0));
+								for (int k =lineNo; k > 0; k++)
+								{
+									if (getModelFileLines().get(k).contains("xsi:type=\"data:RelationalTable\""))
+									{
+										new_elem_ref_property_2_value = new_elem_ref_property_2_value.replace("this", getModelFileLines().get(k).split("name=\"")[1].replace("\">", ""));
+										k=-1;
+									}
+								}
+							}
+
 							table = findTablePosition(new_elem_ref_property_2_value.split("\\.")[0]);
+							
 							String refferingElementName = getReferenceToChildElement(new_elem_ref_property_2_value.split("\\.")[0], new_elem_type ,new_elem_ref_property_2_value.split("\\.")[1],"itemUnit");
 							if (refferingElementName.equals("") || !statementsMoved)
 							{

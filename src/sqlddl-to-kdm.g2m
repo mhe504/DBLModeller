@@ -224,7 +224,7 @@ rule 'createFK'
 				if (targetCol2.hasResults) then
 					name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation,(" + targetCol.STR + " AND " + targetCol2.STR + "),itemUnit;";
 				else
-					name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation," + targetCol.STR + ",itemUnit;";
+					name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation," + targetCol.STR + ",itemUnit;;POSTPROCESS_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
 				end_if
 			end_if		
 		end_if

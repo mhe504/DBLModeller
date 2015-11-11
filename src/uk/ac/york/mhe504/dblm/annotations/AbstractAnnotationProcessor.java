@@ -102,6 +102,7 @@ public abstract class AbstractAnnotationProcessor {
 				}
 			}
 		}
+		System.out.println("could not find:" + name);
 		return -1;
 	}
 
