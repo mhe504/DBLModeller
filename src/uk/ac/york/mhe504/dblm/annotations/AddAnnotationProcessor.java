@@ -192,7 +192,7 @@ public class AddAnnotationProcessor extends AbstractAnnotationProcessor {
 				{
 					List<Integer> linesToRemove = new ArrayList<Integer>();
 					String nodeStatement = statementGroup.get(0).get(1);
-					//linesToRemove.add(Integer.parseInt(statementGroup.get(0).get(0)));
+					linesToRemove.add(Integer.parseInt(statementGroup.get(0).get(0)));
 					String target_parent_elem_name = nodeStatement.replace(ADD_STATEMENT_TYPE + START_CHAR, "").split(FIELD_SEPERATOR_CHAR)[0];
 					String target_parent_elem_type = nodeStatement.replace(ADD_STATEMENT_TYPE + START_CHAR, "").split(FIELD_SEPERATOR_CHAR)[1];
 					
@@ -258,13 +258,13 @@ public class AddAnnotationProcessor extends AbstractAnnotationProcessor {
 									"=\"//@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@itemUnit." + row + "\"/>";
 
 							//Delete annotations
-							/*for (int lnr = 0; lnr <= linesToRemove.size(); lnr++)
+							for (int lnr = 0; lnr < linesToRemove.size(); lnr++)
 							{
 								int removeAt = (int)linesToRemove.get(0);
 								modelFileLines.remove(removeAt);
 								decrementAllLineNumbers(removeAt,addStatements);
 								decrementAllLineNumbers(removeAt,refStatements);
-							}*/
+							}
 
 							if (!isDuplicateLine(newline))
 							{

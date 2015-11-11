@@ -215,21 +215,8 @@ rule 'createFK'
 		targetCol3: /fk/reference_columns/#id[3];
 		targetCol4: /fk/reference_columns/#id[4];
 	mappings
-		if (affectedCol4Name.hasResults) then
-			name  = ";POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:ReferenceKey,implementation,(" + affectedColName.STR + " AND " + affectedCol2Name.STR + " AND " + affectedCol3Name.STR + " AND " + affectedCol4Name.STR + "),itemUnit;;POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:KeyRelation,from,"+ affectedColName.STR +",to," +targetTable.STR +"." + targetCol.STR + ",itemUnit;";
-		else
-			if (affectedCol3Name.hasResults) then
-				name  = ";POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:ReferenceKey,implementation,(" + affectedColName.STR + " AND " + affectedCol2Name.STR + " AND " + affectedCol3Name.STR + "),itemUnit;;POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:KeyRelation,from,"+ affectedColName.STR +",to," +targetTable.STR +"." + targetCol.STR + ",itemUnit;";
-			else		
-				if (affectedCol2Name.hasResults) then
-					name  = ";POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:ReferenceKey,implementation,(" + affectedColName.STR + " AND " + affectedCol2Name.STR + "),itemUnit;;POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:KeyRelation,from,"+ affectedColName.STR +",to," +targetTable.STR +"." + targetCol.STR + ",itemUnit;";
-				else
-					name  = ";POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:ReferenceKey,implementation," + affectedColName.STR + ",itemUnit;;POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:KeyRelation,from,"+ affectedColName.STR +",to," +targetTable.STR +"." + targetCol.STR + ",itemUnit;";
-				end_if
-			end_if		
-		end_if
-	
-	
+name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + affectedColName.STR + ",dataElement,data:ReferenceKey,implementation," + affectedColName.STR + ",itemUnit;";
+
 end_rule
 
 rule 'mapPK'
