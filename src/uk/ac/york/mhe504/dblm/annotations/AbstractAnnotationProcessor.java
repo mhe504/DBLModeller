@@ -302,8 +302,6 @@ public abstract class AbstractAnnotationProcessor {
 		{
 			for (int lineNo = 0; lineNo < modelFileLines.size(); lineNo++)
 			{
-				if (lineNo == 4000)
-					System.out.println("STOP");
 				String line = modelFileLines.get(lineNo);
 				if (line.contains("name=\"" + name + "\"") && line.contains(type) && line.contains(xsitype))
 				{

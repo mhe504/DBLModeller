@@ -249,14 +249,83 @@ public class AddAnnotationProcessor extends AbstractAnnotationProcessor {
 							String ref_tag =leafStatement[5];
 							
 							int model, schema, table,row;
+							int[] positions;
+							String newline = "";
 							model = schema = 0;						
-							int[] positions = findPositions(target_parent_elem_name,"xsi:type=\"data:RelationalTable\"", new_elem_type, new_elem_ref_property_1_value, ref_tag);
+							if (!new_elem_ref_property_1_value.contains("AND"))
+							{
+							/*old start*/
+							positions = findPositions(target_parent_elem_name,"xsi:type=\"data:RelationalTable\"", new_elem_type, new_elem_ref_property_1_value, ref_tag);
 							table = positions[0];
 							row = positions[1];
 							
-							String newline = "<dataElement xsi:type=\"" + new_elem_xsitype + "\" name=\"" + new_elem_name + "\" " + new_elem_ref_property_1_name + 
+							newline = "<dataElement xsi:type=\"" + new_elem_xsitype + "\" name=\"" + new_elem_name + "\" " + new_elem_ref_property_1_name + 
 									"=\"//@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@itemUnit." + row + "\"/>";
+							/*old end*/
+							}
+							else if (StringUtils.countMatches(new_elem_ref_property_1_value, " AND ") == 1)
+							{
+								String row1name = new_elem_ref_property_1_value.split(" AND ")[0].replace("(", "");
+								String row2name = new_elem_ref_property_1_value.split(" AND ")[1].replace(")", "");
+								positions = findPositions(target_parent_elem_name,"xsi:type=\"data:RelationalTable\"", new_elem_type, row1name, ref_tag);
+								table = positions[0];
+								row = positions[1];
+								
+								int row2 = findChildElementPosition(new_elem_ref_property_1_value, new_elem_type, row2name, ref_tag);
+								newline = "<dataElement xsi:type=\"" + new_elem_xsitype + "\" name=\"" + new_elem_name + "\" " + new_elem_ref_property_1_name + 
+										"=\"//@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@itemUnit." + row +
+										"  //@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@itemUnit." + row2 + "\"/>";
 
+							}
+							else if (StringUtils.countMatches(new_elem_ref_property_1_value, " AND ") == 2)
+							{
+								String row1name = new_elem_ref_property_1_value.split(" AND ")[0].replace("(", "");
+								positions = findPositions(target_parent_elem_name,"xsi:type=\"data:RelationalTable\"", new_elem_type, row1name, ref_tag);
+								table = positions[0];
+								row = positions[1];
+								String row2name = new_elem_ref_property_1_value.split(" AND ")[1];
+								String row3name = new_elem_ref_property_1_value.split(" AND ")[2].replace(")", "");
+								int row2 = findChildElementPosition(new_elem_ref_property_1_value, new_elem_type, row2name, ref_tag);
+								int row3 = findChildElementPosition(new_elem_ref_property_1_value, new_elem_type, row3name, ref_tag);
+								
+								newline = "<dataElement xsi:type=\"" + new_elem_xsitype + "\" name=\"" + new_elem_name + "\" " + new_elem_ref_property_1_name + 
+										"=\"//@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@itemUnit." + row +
+										"  //@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@itemUnit." + row2 + 
+										"  //@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@itemUnit." + row3 + "\"/>";
+
+							}
+							else if (StringUtils.countMatches(new_elem_ref_property_1_value, " AND ") == 3)
+							{
+								String row1name = new_elem_ref_property_1_value.split(" AND ")[0].replace("(", "");
+								positions = findPositions(target_parent_elem_name,"xsi:type=\"data:RelationalTable\"", new_elem_type, row1name, ref_tag);
+								table = positions[0];
+								row = positions[1];
+
+								String row2name = new_elem_ref_property_1_value.split(" AND ")[1];
+								String row3name = new_elem_ref_property_1_value.split(" AND ")[2];
+								String row4name = new_elem_ref_property_1_value.split(" AND ")[3].replace(")", "");
+								
+								int row2 = findChildElementPosition(new_elem_ref_property_1_value, new_elem_type, row2name, ref_tag);
+								int row3 = findChildElementPosition(new_elem_ref_property_1_value, new_elem_type, row3name, ref_tag);
+								int row4 = findChildElementPosition(new_elem_ref_property_1_value, new_elem_type, row4name, ref_tag);
+								
+								newline = "<dataElement xsi:type=\"" + new_elem_xsitype + "\" name=\"" + new_elem_name + "\" " + new_elem_ref_property_1_name + 
+										"=\"//@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@itemUnit." + row +
+										"  //@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@itemUnit." + row2 +
+										"  //@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@itemUnit." + row3 +
+										"  //@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@itemUnit." + row4 + "\"/>";
+
+							}
+							else
+							{						
+								positions = findPositions(new_elem_ref_property_1_value.split("\\.")[0],"xsi:type=\"data:RelationalTable\"", new_elem_type, new_elem_ref_property_1_value.split("\\.")[1], ref_tag);
+								table = positions[0];
+								row = positions[1];
+								
+								newline = "<dataElement xsi:type=\"" + new_elem_xsitype + "\" name=\"" + new_elem_name + "\" " + new_elem_ref_property_1_name + 
+										"=\"//@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@itemUnit." + row + "\"/>";
+								
+							}
 							//Delete annotations
 							for (int lnr = 0; lnr < linesToRemove.size(); lnr++)
 							{

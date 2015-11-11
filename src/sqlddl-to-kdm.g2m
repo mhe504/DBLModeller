@@ -215,8 +215,19 @@ rule 'createFK'
 		targetCol3: /fk/reference_columns/#id[3];
 		targetCol4: /fk/reference_columns/#id[4];
 	mappings
-name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + affectedColName.STR + ",dataElement,data:ReferenceKey,implementation," + affectedColName.STR + ",itemUnit;";
-
+		if (targetCol4.hasResults) then
+			name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation,(" + targetCol.STR + " AND " + targetCol2.STR + " AND " + targetCol3.STR + " AND " + targetCol4.STR + "),itemUnit;";
+		else
+			if (targetCol3.hasResults) then
+				name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation,(" + targetCol.STR + " AND " + targetCol2.STR + " AND " + targetCol3.STR + "),itemUnit;";
+			else		
+				if (targetCol2.hasResults) then
+					name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation,(" + targetCol.STR + " AND " + targetCol2.STR + "),itemUnit;";
+				else
+					name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation," + targetCol.STR + ",itemUnit;";
+				end_if
+			end_if		
+		end_if
 end_rule
 
 rule 'mapPK'
