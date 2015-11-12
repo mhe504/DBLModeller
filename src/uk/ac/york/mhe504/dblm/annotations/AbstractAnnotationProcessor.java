@@ -48,7 +48,7 @@ public abstract class AbstractAnnotationProcessor {
 				
 			if (parentPosition != -1){
 				if (line.contains(child_element_type)){
-					if (line.contains("name=\"" + child_element_name))
+					if (line.contains("name=\"" + child_element_name + "\"") || line.contains("name=\"" + child_element_name + ";"))
 					{
 						childPosition = position;
 						return new int[]{parentPosition,childPosition};
@@ -62,6 +62,7 @@ public abstract class AbstractAnnotationProcessor {
 			
 		}
 		
+		System.out.println("ERROR: Could not find column `" + child_element_name + "` in table `" + root_element_name + "`.");
 		return null;
 	}
 	
@@ -102,7 +103,7 @@ public abstract class AbstractAnnotationProcessor {
 				}
 			}
 		}
-		System.out.println("could not find:" + name);
+		System.out.println("ERROR: could not find table :" + name);
 		return -1;
 	}
 

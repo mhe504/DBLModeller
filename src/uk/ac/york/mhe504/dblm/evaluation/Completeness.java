@@ -147,6 +147,23 @@ public class Completeness {
 		set1.addAll(list1);
 		Set<String> set2 = new HashSet<String>();
 		set2.addAll(list2);
+		
+//do not match
+		Set<String> set3 = new HashSet<String>();
+		set3.addAll(set2);
+		set3.removeAll(set1);
+		
+		Set<String> set4 = new HashSet<String>();
+		set4.addAll(set1);
+		set4.removeAll(set2);
+		
+		Set<String> set5 = new HashSet<String>();
+		set5.addAll(set4);
+		set5.addAll(set3);
+		
+		for (String s: set5)
+			System.out.println(s);
+
 		return set1.equals(set2);
 		
 	}
@@ -329,7 +346,7 @@ public class Completeness {
 			else if (line.contains(" KEY `"))
 			{
 				String[] parts = line.split("`");
-				keyNames.add(parts[1]);
+				ukNames.add(parts[3]);
 			}
 			else if (line.contains("CREATE UNIQUE INDEX \""))
 			{
@@ -403,7 +420,7 @@ public class Completeness {
 				String toTable =toparts[1];
 				String toCol=toparts[3];
 				
-				references.add(fromTable + "." + fromCol + ";" + toTable + "." + toCol);
+				references.add(toTable + "." + toCol + ";" + fromTable + "." + fromCol);
 			}
 			else if (line.contains("  `"))
 			{

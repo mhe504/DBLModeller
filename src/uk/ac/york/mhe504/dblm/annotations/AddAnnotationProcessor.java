@@ -223,28 +223,37 @@ public class AddAnnotationProcessor extends AbstractAnnotationProcessor {
 							row = positions[1];
 							String ref1 = "//@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@dataElement." + row;
 							
+							String type = "itemUnit";
 							if ("this".equals(new_elem_ref_property_2_value.split("\\.")[0]))
 							{
 								int lineNo = Integer.parseInt(statementGroup.get(j).get(0));
-								for (int k =lineNo; k > 0; k++)
+								for (int k =lineNo; k > 0; k--)
 								{
 									if (getModelFileLines().get(k).contains("xsi:type=\"data:RelationalTable\""))
 									{
 										new_elem_ref_property_2_value = new_elem_ref_property_2_value.replace("this", getModelFileLines().get(k).split("name=\"")[1].replace("\">", ""));
 										k=-1;
+										type = "dataElement";
 									}
 								}
 							}
 
 							table = findTablePosition(new_elem_ref_property_2_value.split("\\.")[0]);
 							
-							String refferingElementName = getReferenceToChildElement(new_elem_ref_property_2_value.split("\\.")[0], new_elem_type ,new_elem_ref_property_2_value.split("\\.")[1],"itemUnit");
+							String refferingElementName = getReferenceToChildElement(new_elem_ref_property_2_value.split("\\.")[0], new_elem_type ,new_elem_ref_property_2_value.split("\\.")[1],type);
 							if (refferingElementName.equals("") || !statementsMoved)
 							{
-								refferingElementName = getUnResolvedReferenceToChildElement(new_elem_ref_property_2_value.split("\\.")[0], new_elem_type ,new_elem_ref_property_2_value.split("\\.")[1],"itemUnit");
+								refferingElementName = getUnResolvedReferenceToChildElement(new_elem_ref_property_2_value.split("\\.")[0], new_elem_type ,new_elem_ref_property_2_value.split("\\.")[1],type);
 							}
-							
-							row = findChildElementPosition(new_elem_ref_property_2_value.split("\\.")[0], new_elem_type,refferingElementName,ref_tag);
+							if (refferingElementName.equals("") || leafStatement[6].contains("this."))
+							{
+								positions = findPositions(new_elem_ref_property_2_value.split("\\.")[0],"xsi:type=\"data:RelationalTable\"", new_elem_type, new_elem_ref_property_2_value.split("\\.")[1], new_elem_type);
+								table = positions[0];
+								row = positions[1];
+							}
+							else
+								row = findChildElementPosition(new_elem_ref_property_2_value.split("\\.")[0], new_elem_type,refferingElementName,ref_tag);
+							positions = findPositions(new_elem_ref_property_2_value.split("\\.")[0],"xsi:type=\"data:RelationalTable\"", new_elem_type, new_elem_ref_property_2_value.split("\\.")[1], new_elem_type);
 							String ref2 = "//@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@dataElement." + row;
 							String newline = "<dataElement xsi:type=\"" + new_elem_xsitype + "\" " + new_elem_ref_property_2_name 
 									 + "=\"" + ref2 + "\" " + new_elem_ref_property_1_name + "=\"" + ref1 + "\"/>";
@@ -268,14 +277,12 @@ public class AddAnnotationProcessor extends AbstractAnnotationProcessor {
 							model = schema = 0;						
 							if (!new_elem_ref_property_1_value.contains("AND"))
 							{
-							/*old start*/
-							positions = findPositions(target_parent_elem_name,"xsi:type=\"data:RelationalTable\"", new_elem_type, new_elem_ref_property_1_value, ref_tag);
-							table = positions[0];
-							row = positions[1];
+								positions = findPositions(target_parent_elem_name,"xsi:type=\"data:RelationalTable\"", new_elem_type, new_elem_ref_property_1_value, ref_tag);
+								table = positions[0];
+								row = positions[1];
 							
-							newline = "<dataElement xsi:type=\"" + new_elem_xsitype + "\" name=\"" + new_elem_name + "\" " + new_elem_ref_property_1_name + 
-									"=\"//@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@itemUnit." + row + "\"/>";
-							/*old end*/
+								newline = "<dataElement xsi:type=\"" + new_elem_xsitype + "\" name=\"" + new_elem_name + "\" " + new_elem_ref_property_1_name + 
+										"=\"//@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@itemUnit." + row + "\"/>";
 							}
 							else if (StringUtils.countMatches(new_elem_ref_property_1_value, " AND ") == 1)
 							{
