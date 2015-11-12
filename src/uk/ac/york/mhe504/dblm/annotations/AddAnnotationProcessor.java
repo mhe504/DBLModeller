@@ -178,15 +178,26 @@ public class AddAnnotationProcessor extends AbstractAnnotationProcessor {
 			{
 				//Get related statements
 				List<List<String>> statementGroup = new ArrayList<>();
-				do
+				if (addStatements[i][1].contains(ADD_ALL_CHAR))
+				{
+					do
+					{
+						List<String> lst = new ArrayList<String>();
+						lst.add(addStatements[i][0]);
+						lst.add(addStatements[i][1]);
+						statementGroup.add(lst);
+						i++;
+					} while (i <  addStatements.length && !addStatements[i][1].contains(ADD_ALL_CHAR) && addStatements[i][1].contains("ADD:"));
+					i--;	
+				}
+				else
 				{
 					List<String> lst = new ArrayList<String>();
 					lst.add(addStatements[i][0]);
 					lst.add(addStatements[i][1]);
 					statementGroup.add(lst);
-					i++;
-				} while (i <  addStatements.length && !addStatements[i][1].contains(ADD_ALL_CHAR) && addStatements[i][1].contains("ADD:"));
-				i--;	
+				}
+
 				
 				if (statementGroup.size() > 1)
 				{
@@ -200,7 +211,7 @@ public class AddAnnotationProcessor extends AbstractAnnotationProcessor {
 					for (int j = 1; j < statementGroup.size(); j++)
 					{
 						String[] leafStatement = statementGroup.get(j).get(1).replace(ADD_STATEMENT_TYPE + START_CHAR, "").split(FIELD_SEPERATOR_CHAR);
-						//linesToRemove.add(Integer.parseInt(statementGroup.get(j).get(0)));
+						linesToRemove.add(Integer.parseInt(statementGroup.get(j).get(0)));
 						
 						String new_elem_name = leafStatement[0];
 						String new_elem_type = leafStatement[1];
@@ -253,7 +264,6 @@ public class AddAnnotationProcessor extends AbstractAnnotationProcessor {
 							}
 							else
 								row = findChildElementPosition(new_elem_ref_property_2_value.split("\\.")[0], new_elem_type,refferingElementName,ref_tag);
-							positions = findPositions(new_elem_ref_property_2_value.split("\\.")[0],"xsi:type=\"data:RelationalTable\"", new_elem_type, new_elem_ref_property_2_value.split("\\.")[1], new_elem_type);
 							String ref2 = "//@model." + model + "/@dataElement." + schema + "/@dataElement." + table + "/@dataElement." + row;
 							String newline = "<dataElement xsi:type=\"" + new_elem_xsitype + "\" " + new_elem_ref_property_2_name 
 									 + "=\"" + ref2 + "\" " + new_elem_ref_property_1_name + "=\"" + ref1 + "\"/>";
@@ -348,13 +358,24 @@ public class AddAnnotationProcessor extends AbstractAnnotationProcessor {
 								
 							}
 							//Delete annotations
-							for (int lnr = 0; lnr < linesToRemove.size(); lnr++)
+							if (modelFileLines.get((int)linesToRemove.get(0)).contains("data:RelationalTable"))
+							{
+								for (int lnr = 0; lnr <= linesToRemove.size(); lnr++)
+								{
+									int removeAt = (int)linesToRemove.get(0);
+									modelFileLines.remove(removeAt);
+									decrementAllLineNumbers(removeAt,addStatements);
+									decrementAllLineNumbers(removeAt,refStatements);
+								}
+							}
+							else if (linesToRemove.size() != 0)
 							{
 								int removeAt = (int)linesToRemove.get(0);
 								modelFileLines.remove(removeAt);
 								decrementAllLineNumbers(removeAt,addStatements);
 								decrementAllLineNumbers(removeAt,refStatements);
 							}
+
 
 							if (!isDuplicateLine(newline))
 							{
