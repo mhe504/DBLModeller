@@ -16,7 +16,7 @@ import java.util.Set;
  * @author mhe504@york.ac.uk
  *
  */
-public class Completeness {
+public class ModelChecker {
 	
 	//SQL
 	private static List<String> tableNames = new ArrayList<String>();
@@ -37,17 +37,92 @@ public class Completeness {
 	private static List<String> annotationValues = new ArrayList<String>();
 	private static List<String> keyRelationships = new ArrayList<String>();
 	
+	//CSV
+	private static List<String> tupleNames = new ArrayList<String>();
+	private static List<Double> tupleValues = new ArrayList<Double>();
+	
+	//SMM
+	private static List<String> observationNames = new ArrayList<String>();
+	private static List<Double> directMeasurementValues = new ArrayList<Double>();
+	
 	public static void main (String[] args) throws IOException
 	{
-		List<String> schema = Files.readAllLines(Paths.get("sample-inputs/schema.sql"), Charset.defaultCharset());
+		List<String> input = Files.readAllLines(Paths.get("sample-inputs/schema.sql"), Charset.defaultCharset());
 		List<String> model = Files.readAllLines(Paths.get("StructureModel.xmi"), Charset.defaultCharset());
 
-		extractSqlElementNames(schema);
+		extractSqlElementNames(input);
 		extractKdmElementNames(model);
 		
 		outputResults();
+		
+		input = Files.readAllLines(Paths.get("sample-inputs/loadmeasurements.csv"), Charset.defaultCharset());
+		model = Files.readAllLines(Paths.get("WorkloadModel.xmi"), Charset.defaultCharset());
+		
+		extractCsvElements(input);
+		extractSmmElements(model);
+		
+		outputSmmResults();
+
 	}
 	
+	private static void extractCsvElements(List<String> input) {
+
+		for (int i =1; i < input.size(); i++)
+		{
+			String line = input.get(i);
+			tupleNames.add(line.split(",")[0]);
+			tupleValues.add(Double.parseDouble(line.split(",")[3]));
+			tupleValues.add(Double.parseDouble(line.split(",")[4]));
+			tupleValues.add(Double.parseDouble(line.split(",")[5]));
+			tupleValues.add(Double.parseDouble(line.split(",")[6]));
+			tupleValues.add(Double.parseDouble(line.split(",")[7]));
+		}
+		
+	}
+	
+	private static void extractSmmElements(List<String> model) {
+		for (String s : model)
+		{
+			if (s.contains("<observations name"))
+			{
+				observationNames.add(s.split("=")[1].replace("\"", "").replace(">", ""));
+			}
+			else if (s.contains("smm:DirectMeasurement"))
+			{
+				directMeasurementValues.add(Double.parseDouble(s.split("\"")[5]));
+			}
+		}
+		
+	}
+	
+	private static void outputSmmResults() {
+		System.out.println("================== ELEMENT COUNTS =================");
+		System.out.println("Measurement Set:\tSMM:");
+		System.out.println("Tuples:\t\t" + tupleNames.size() + "\tOberservations:\t" + observationNames.size());
+		System.out.println("Values:\t\t" + tupleValues.size() + "\tDirectMeasurements:\t" + directMeasurementValues.size());
+		System.out.println("==================================================");
+		System.out.println();
+		System.out.println("===================== TUPLES =====================");
+		System.out.format("%-30s%-30s\n", "CSV Tuple Names:", "SMM Observation Names:");
+		makeListSizeEqual(tupleNames, observationNames);
+		for (int i = 0; i < tupleNames.size(); i++)
+			System.out.format("%-30s%-30s\n", tupleNames.get(i), observationNames.get(i));
+		System.out.println("==================================================");
+		System.out.println("Tuple Names Match? " + areIdentical(tupleNames,observationNames));
+		System.out.println("==================================================");
+		System.out.println();
+		System.out.println("===================== VALUES =====================");
+		System.out.format("%-30s%-30s\n", "CSV Values:", "SMM DirectMeasurement values:");
+		makeListSizeEqual(tupleValues, directMeasurementValues);
+		for (int i = 0; i < tupleValues.size(); i++)
+			System.out.format("%-30s%-30s\n", tupleValues.get(i), directMeasurementValues.get(i));
+		System.out.println("==================================================");
+		System.out.println("Values Match? " + areIdentical(tupleValues,directMeasurementValues));
+		System.out.println("==================================================");
+	}
+
+
+
 	private static void outputResults(){
 		System.out.println("================== ELEMENT COUNTS =================");
 		System.out.println("SQL:\t\t\tKDM:");
@@ -130,40 +205,24 @@ public class Completeness {
 	}
 
 	
-	private static void makeListSizeEqual(List<String> list1, List<String> list2)
+	private static void makeListSizeEqual(List<?> list1, List<?> list2)
 	{
 		int max = Math.max(list1.size(), list2.size());
 		
 		while (list1.size() != max)
-			list1.add("");
+			list1.add(null);
 		
 		while (list2.size() != max)
-			list2.add("");
+			list2.add(null);
 	}
 	
-	private static boolean areIdentical(List<String> list1, List<String> list2)
+	private static boolean areIdentical(List<?> list1, List<?> list2)
 	{
-		Set<String> set1 = new HashSet<String>();
+		Set<Object> set1 = new HashSet<Object>();
 		set1.addAll(list1);
-		Set<String> set2 = new HashSet<String>();
+		Set<Object> set2 = new HashSet<Object>();
 		set2.addAll(list2);
 		
-//do not match
-		Set<String> set3 = new HashSet<String>();
-		set3.addAll(set2);
-		set3.removeAll(set1);
-		
-		Set<String> set4 = new HashSet<String>();
-		set4.addAll(set1);
-		set4.removeAll(set2);
-		
-		Set<String> set5 = new HashSet<String>();
-		set5.addAll(set4);
-		set5.addAll(set3);
-		
-		for (String s: set5)
-			System.out.println(s);
-
 		return set1.equals(set2);
 		
 	}
