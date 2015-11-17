@@ -35,6 +35,15 @@ rule 'createTypes'
 		codeElement = execute createInteger f;
 		codeElement = execute createString f;
 		codeElement = execute createSequence f;
+		codeElement = execute createVoid f;
+end_rule
+
+rule 'createVoid'
+	from file f
+	to kdm::code::VoidType
+	queries
+	mappings
+		name = "Undefined Type";
 end_rule
 
 rule 'createSequence'
@@ -138,8 +147,7 @@ rule 'createSchema'
 		cui : /ddl/#create_index{UNIQUE.exists};
 		cs : /ddl/#create_sequence;
 		at : /ddl/#alter_table{ADD.exists};
-		tblComments: /ddl/comment/#table_comment;
-		colComments: /ddl/comment/#column_comment;
+		tblComments: //#table_comment;
 	mappings
 		name = fname.filename;
 		dataElement = ct;
@@ -148,24 +156,17 @@ rule 'createSchema'
 		dataElement = execute mapSequence cs;
 		dataElement = execute createAlterTables at;
 		annotation = tblComments;
-		annotation = colComments;
 end_rule
 
 rule 'mapColComment'
 	from column_comment com
 	to kdm::kdm::Annotation
 	queries
-	mappings
-		text  = ext NodeToString(com);
-end_rule
-
-rule 'mapTblComment'
-	from table_comment com
-	to kdm::kdm::Annotation
-	queries
 		tableName : /com/#id[0];
+		colName : /com/#id[1];
+		commentText : /com/#comment_value;
 	mappings
-		text  = ext NodeToString(com, tableName);
+		text  = ext NodeToString(commentText);
 end_rule
 
 rule 'mapSequence'
@@ -175,6 +176,14 @@ rule 'mapSequence'
 		id : /seq/#id;
 	mappings
 		name  = id.STR;
+end_rule
+
+rule 'mapIdentity'
+	from params p
+	to kdm::data::SeqContent
+	queries
+	mappings
+		name  = "IDENTITY";
 end_rule
 
 rule 'mapTables'
@@ -188,7 +197,7 @@ rule 'mapTables'
 		keyc: /ct//#key_constraint{PRIMARY.exists};
 		fks: /ct//#key_constraint{FOREIGN.exists};
 		ukeys: /ct//#unique_key;
-		cols  : /ct//#column;
+		cols  : /ct//#column{!AS_1.exists && !AS_2.exists};
 	mappings
 		name  = id.STR;
 		name  = id2.TEXT_TYPE;
@@ -215,19 +224,21 @@ rule 'createFK'
 		targetCol3: /fk/reference_columns/#id[3];
 		targetCol4: /fk/reference_columns/#id[4];
 	mappings
-		if (targetCol4.hasResults) then
-			name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation,(" + targetCol.STR + " AND " + targetCol2.STR + " AND " + targetCol3.STR + " AND " + targetCol4.STR + "),itemUnit;;POSTPROCESS_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
+		if (affectedCol4Name.hasResults) then
+			name  = ";POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:ReferenceKey,implementation,(" + affectedColName.STR + " AND " + affectedCol2Name.STR + " AND " + affectedCol3Name.STR + " AND " + affectedCol4Name.STR + "),itemUnit;;POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:KeyRelation,from,"+ affectedColName.STR +",to," +targetTable.STR +"." + targetCol.STR + ",itemUnit;";
 		else
-			if (targetCol3.hasResults) then
-				name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation,(" + targetCol.STR + " AND " + targetCol2.STR + " AND " + targetCol3.STR + "),itemUnit;;POSTPROCESS_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
+			if (affectedCol3Name.hasResults) then
+				name  = ";POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:ReferenceKey,implementation,(" + affectedColName.STR + " AND " + affectedCol2Name.STR + " AND " + affectedCol3Name.STR + "),itemUnit;;POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:KeyRelation,from,"+ affectedColName.STR +",to," +targetTable.STR +"." + targetCol.STR + ",itemUnit;";
 			else		
-				if (targetCol2.hasResults) then
-					name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation,(" + targetCol.STR + " AND " + targetCol2.STR + "),itemUnit;;POSTPROCESS_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
+				if (affectedCol2Name.hasResults) then
+					name  = ";POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:ReferenceKey,implementation,(" + affectedColName.STR + " AND " + affectedCol2Name.STR + "),itemUnit;;POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:KeyRelation,from,"+ affectedColName.STR +",to," +targetTable.STR +"." + targetCol.STR + ",itemUnit;";
 				else
-					name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation," + targetCol.STR + ",itemUnit;;POSTPROCESS_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
+					name  = ";POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:ReferenceKey,implementation," + affectedColName.STR + ",itemUnit;;POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:KeyRelation,from,"+ affectedColName.STR +",to," +targetTable.STR +"." + targetCol.STR + ",itemUnit;";
 				end_if
 			end_if		
 		end_if
+	
+	
 end_rule
 
 rule 'mapPK'
@@ -433,9 +444,12 @@ rule 'mapColumns'
 		intType:  /cols/#type{INT_TYPE.exists};
 		floatType:  /cols/#type{DOUBLE_TYPE.exists || FLOAT_TYPE.exists};
 		bitStringType:  /cols/#type{BINARY_TYPE.exists || VARBINARY_TYPE.exists || BLOB_TYPE.exists};
+		booleanType: /cols/#type{BIT_TYPE.exists};
 		dateType: /cols/#type{DATETIME_TYPE.exists || TIMESTAMP_TYPE.exists || INTERVAL_TYPE.exists};
-		seqType: /cols/#params{AUTO_INCREMENT.exists};
+		seqType: /cols/#params{AUTO_INCREMENT.exists || IDENTITY.exists};
+		userDefinedType:  /cols/#type{POINT.exists};
 	mappings
+		annotation = ext AnnotationExtension(cols, allAnnotations);
 		if(id2.hasResults) then
 			if(stringType.hasResults) then
 				name = id.TEXT_TYPE + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Character String,model.codeElement.codeElement;";
@@ -467,6 +481,12 @@ rule 'mapColumns'
 			if(seqType.hasResults) then
 				name = id.TEXT_TYPE + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Auto-Increment,model.codeElement.codeElement;";
 			end_if
+			if(booleanType.hasResults) then
+				name = id.TEXT_TYPE + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Boolean,model.codeElement.codeElement;";
+			end_if
+			if(userDefinedType.hasResults) then
+				name = id.TEXT_TYPE + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Undefined Type,model.codeElement.codeElement;";
+			end_if
 		else
 			if(stringType.hasResults) then
 				name = id.STR + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Character String,model.codeElement.codeElement;";
@@ -497,6 +517,12 @@ rule 'mapColumns'
 			end_if
 			if(seqType.hasResults) then
 				name = id.STR + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Auto-Increment,model.codeElement.codeElement;";
+			end_if
+			if(booleanType.hasResults) then
+				name = id.STR + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Boolean,model.codeElement.codeElement;";
+			end_if
+			if(userDefinedType.hasResults) then
+				name = id.STR + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Undefined Type,model.codeElement.codeElement;";
 			end_if
 		end_if
 end_rule
