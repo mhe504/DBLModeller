@@ -200,6 +200,7 @@ rule 'mapTables'
 	queries
 		id : /ct/#id{STR.exists};
 		id2 : /ct/#id{TEXT_TYPE.exists};
+		id3 : /ct/#id{BLOB_TYPE.exists};
 		pk: /ct//#primary_key;
 		keys: /ct//#key;
 		keyc: /ct//#key_constraint{PRIMARY.exists};
@@ -209,6 +210,7 @@ rule 'mapTables'
 	mappings
 		name  = id.STR;
 		name  = id2.TEXT_TYPE;
+		name  = id3.BLOB_TYPE;
 		dataElement = pk;
 		dataElement = keys;
 		dataElement = ukeys;
