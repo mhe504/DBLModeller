@@ -138,9 +138,9 @@ BINARY_NULL : '\\0';
 statements: ddl_statements;
 ddl_statements: (create_sequence | create_table | create_index | alter_table | comment | db_params)*;
 comment: COMMENT ON (table_comment | column_comment) SC;
-table_comment: TABLE id IS comment_value;
-column_comment: COLUMN id '.' id IS comment_value;
-comment_value: Q2 (STR | (OB (STR | '.' | NEG | CA | COLON | NUMBER)+ CB) | '.' | NEG | CA | COLON | NUMBER)+ Q2;
+table_comment: TABLE id IS COMMENT_VALUE;
+column_comment: COLUMN id '.' id IS COMMENT_VALUE;
+COMMENT_VALUE: '\'' ~('\'')* '\'';
 
 db_params: SET (ANSI_NULLS | QUOTED_IDENTIFIER) (ON | OFF) GO;
 
@@ -168,16 +168,16 @@ alter_params: 'DELETE 'SET NULL_TYPE | 'DELETE CASCADE' | 'DEFERRABLE' | 'INITIA
 table_properties: LOCK_ESCALATION EQ DISABLE;
 
 column : id (type | AS_1 .*  'end)' |
-AS_2 CONVERT OB '[' VARCHAR_TYPE ']' CA id DIV OB NUMBER CB CA NUMBER CB POS Q2 POINT Q2 CB POS CONVERT OB '[' VARCHAR_TYPE ']' CA id MOD OB NUMBER CB CA NUMBER CB CB) params*;
+AS_2 CONVERT OB '[' VARCHAR_TYPE ']' CA id DIV OB NUMBER CB CA NUMBER CB POS COMMENT_VALUE CB POS CONVERT OB '[' VARCHAR_TYPE ']' CA id MOD OB NUMBER CB CA NUMBER CB CB) params*;
 
-id : Q1 (STR | TEXT_TYPE) Q1 | Q3 (PRIMARY | STR) Q3 | (SYS_EXTRACT_UTC_FUNC | LOWER ) OB Q3 STR Q3 CB | STR | '[' STR ']';
+id : Q1 (STR | TEXT_TYPE | BLOB_TYPE) Q1 | Q3 (PRIMARY | STR) Q3 | (SYS_EXTRACT_UTC_FUNC | LOWER ) OB Q3 STR Q3 CB | STR | '[' STR ']';
 val: Q2 (STR | TEXT_TYPE) Q2;
 
 type: 
 '['? VARCHAR2_TYPE ']'? (OB NUMBER (CA BYTE_TYPE | CHAR_TYPE)? CB)? |
 '['? (BINARY_TYPE |  VARBINARY_TYPE  |  TEXT_TYPE  | BLOB_TYPE | VARCHAR_TYPE | CHAR_TYPE) ']'? (OB ('max' | NUMBER) CHAR_TYPE? CB)? | 
 '['? (INT_TYPE | NUMBER_TYPE | FLOAT_TYPE | DOUBLE_TYPE | DECIMIAL_TYPE) ']'? (OB NUMBER (CA NUMBER)? CB)? UNSIGNED? | 
-ENUM_TYPE OB (val CA?)+ CB | 
+ENUM_TYPE OB (COMMENT_VALUE CA?)+ CB | 
 '['? TIMESTAMP_TYPE ']'? (OB NUMBER CB)? 'WITH TIME ZONE'? | 
 '['? DATETIME_TYPE ']'? (OB NUMBER CB)? | 
 '['? CLOB_TYPE ']'? | 
@@ -188,7 +188,7 @@ id POINT id
 
 params: 'COLUMN_SET FOR ALL_SPARSE_COLUMNS' | NOT NULL_TYPE | NULL_TYPE | 'SPARSE' | DEFAULT defaultvalue | (AUTO_INCREMENT |  IDENTITY OB NUMBER CA NUMBER CB) | ON UPDATE updatevalue | COLLATE LATIN1_GENERAL_CHAR_SET;
 
-defaultvalue: Q2 .* Q2 | NULL_TYPE | updatevalue | NUMBER | SIGNED_NUMBER;
+defaultvalue: COMMENT_VALUE | NULL_TYPE | updatevalue | NUMBER | SIGNED_NUMBER;
 updatevalue: CURRENT_TIMESTAMP | LOCALTIMESTAMP | LOCALTIME | CURRENT_TIMESTAMP OB CB | NOW OB CB | LOCALTIME OB CB | LOCALTIMESTAMP OB CB | SYSDATE; 
 
 

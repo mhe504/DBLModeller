@@ -147,7 +147,8 @@ rule 'createSchema'
 		cui : /ddl/#create_index{UNIQUE.exists};
 		cs : /ddl/#create_sequence;
 		at : /ddl/#alter_table{ADD.exists};
-		tblComments: //#table_comment;
+		tblComments: /ddl/comment/#table_comment;
+		colComments: /ddl/comment/#column_comment;
 	mappings
 		name = fname.filename;
 		dataElement = ct;
@@ -156,17 +157,24 @@ rule 'createSchema'
 		dataElement = execute mapSequence cs;
 		dataElement = execute createAlterTables at;
 		annotation = tblComments;
+		annotation = colComments;
 end_rule
 
 rule 'mapColComment'
 	from column_comment com
 	to kdm::kdm::Annotation
 	queries
-		tableName : /com/#id[0];
-		colName : /com/#id[1];
-		commentText : /com/#comment_value;
 	mappings
-		text  = ext NodeToString(commentText);
+		text  = ext NodeToString(com);
+end_rule
+
+rule 'mapTblComment'
+	from table_comment com
+	to kdm::kdm::Annotation
+	queries
+		tableName : /com/#id[0];
+	mappings
+		text  = ext NodeToString(com, tableName);
 end_rule
 
 rule 'mapSequence'
@@ -224,21 +232,19 @@ rule 'createFK'
 		targetCol3: /fk/reference_columns/#id[3];
 		targetCol4: /fk/reference_columns/#id[4];
 	mappings
-		if (affectedCol4Name.hasResults) then
-			name  = ";POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:ReferenceKey,implementation,(" + affectedColName.STR + " AND " + affectedCol2Name.STR + " AND " + affectedCol3Name.STR + " AND " + affectedCol4Name.STR + "),itemUnit;;POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:KeyRelation,from,"+ affectedColName.STR +",to," +targetTable.STR +"." + targetCol.STR + ",itemUnit;";
+		if (targetCol4.hasResults) then
+			name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation,(" + targetCol.STR + " AND " + targetCol2.STR + " AND " + targetCol3.STR + " AND " + targetCol4.STR + "),itemUnit;;POSTPROCESS_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
 		else
-			if (affectedCol3Name.hasResults) then
-				name  = ";POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:ReferenceKey,implementation,(" + affectedColName.STR + " AND " + affectedCol2Name.STR + " AND " + affectedCol3Name.STR + "),itemUnit;;POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:KeyRelation,from,"+ affectedColName.STR +",to," +targetTable.STR +"." + targetCol.STR + ",itemUnit;";
+			if (targetCol3.hasResults) then
+				name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation,(" + targetCol.STR + " AND " + targetCol2.STR + " AND " + targetCol3.STR + "),itemUnit;;POSTPROCESS_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
 			else		
-				if (affectedCol2Name.hasResults) then
-					name  = ";POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:ReferenceKey,implementation,(" + affectedColName.STR + " AND " + affectedCol2Name.STR + "),itemUnit;;POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:KeyRelation,from,"+ affectedColName.STR +",to," +targetTable.STR +"." + targetCol.STR + ",itemUnit;";
+				if (targetCol2.hasResults) then
+					name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation,(" + targetCol.STR + " AND " + targetCol2.STR + "),itemUnit;;POSTPROCESS_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
 				else
-					name  = ";POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:ReferenceKey,implementation," + affectedColName.STR + ",itemUnit;;POSTPROCESS_ADDH:" + fkName.STR + ",dataElement,data:KeyRelation,from,"+ affectedColName.STR +",to," +targetTable.STR +"." + targetCol.STR + ",itemUnit;";
+					name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation," + targetCol.STR + ",itemUnit;;POSTPROCESS_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
 				end_if
 			end_if		
 		end_if
-	
-	
 end_rule
 
 rule 'mapPK'
@@ -449,7 +455,6 @@ rule 'mapColumns'
 		seqType: /cols/#params{AUTO_INCREMENT.exists || IDENTITY.exists};
 		userDefinedType:  /cols/#type{POINT.exists};
 	mappings
-		annotation = ext AnnotationExtension(cols, allAnnotations);
 		if(id2.hasResults) then
 			if(stringType.hasResults) then
 				name = id.TEXT_TYPE + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Character String,model.codeElement.codeElement;";
