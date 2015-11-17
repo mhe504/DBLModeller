@@ -24,36 +24,17 @@ import org.apache.commons.io.FileUtils;
 
 public class OJDBCLogProcessor {
 
-	private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
-
 	/* Input: folder of JDBC log files
 	 * Output: CSV metric file for the SMM transformation. A CSV file for each time interval
 	 * listing the tables and the queries received for each.
 	 * 
 	 */
 	
-	public static void main(String[] args) throws IOException, ParseException {
+	public void execute(File targetFile, String entity) throws IOException, ParseException {
 
-		getOrderedQueryList(new File("C:\\Users\\martyn.ellison\\Desktop\\target"),
-				new File("C:\\Users\\martyn.ellison\\Desktop\\target\\OrderedQueryLst.csv"));
-		
-		
-		for (int minutes = 20; minutes<44;minutes++)
-		{
-			extractSublistsFromOrderedList(dateFormat.parse("30-Sep-2015 10:" + minutes + ":00"),
-					dateFormat.parse("30-Sep-2015 10:" + (minutes+1) + ":00"),
-					new File("C:\\Users\\martyn.ellison\\Desktop\\target\\OrderedQueryLst.csv"),
-					new File("C:\\Users\\martyn.ellison\\Desktop\\target\\SubList" + minutes + ".csv"));
-			
-			proccessOrderedQueryList("C:\\Users\\martyn.ellison\\Desktop\\target\\SubList" + minutes + ".csv", 
-					"C:\\Users\\martyn.ellison\\Desktop\\target\\PerfTestSuite" + minutes + ".csv",
-					"30-Sep-2015 10:" + minutes + ":00", "30-Sep-2015 10:" + (minutes+1) + ":00");
-			
-			resultsToCSV("C:\\Users\\martyn.ellison\\Desktop\\target\\PerfTestSuite" + minutes + ".csv", 
-					"C:\\Users\\martyn.ellison\\Desktop\\target\\workload.csv",
-					"CATALOGUE.ITEMS");
-		}
-		
+		getOrderedQueryList(targetFile,new File("OrderedQueryList.csv"));
+		outputQueryTypeCounts("OrderedQueryList.csv", "Counts.csv");
+		resultsToCSV("Counts.csv", "measurements.csv", entity);		
 	}
 		
 	
@@ -88,7 +69,7 @@ public class OJDBCLogProcessor {
 	}
 
 
-	public static void proccessOrderedQueryList (String logFileName, String outputFileName, String tsStart, String tsEnd) throws IOException
+	private static void outputQueryTypeCounts (String logFileName, String outputFileName) throws IOException
 	{
 		List<String> file = FileUtils.readLines(new File(logFileName));
 		Map<String, Integer> tableSelects = new HashMap<>();
@@ -113,7 +94,6 @@ public class OJDBCLogProcessor {
 		tableNames.addAll(tableMerge.keySet());
 		
 		PrintWriter printer = new PrintWriter(new File(outputFileName));
-		printer.println(tsStart + "," + tsEnd);
 		printer.println("Tables Accessed, SELECTs, INSERTS, DELETES, UPDATES, MERGES");
 		for (String s: tableNames)
 		{
@@ -218,76 +198,50 @@ public class OJDBCLogProcessor {
 	}
 
 
-	private static void extractSublistsFromOrderedList(Date startDate, Date endDate, File input, File output)
-			throws IOException, FileNotFoundException, ParseException {
-		List<String> lines = FileUtils.readLines(input);
-		PrintWriter printer = new PrintWriter(output);
+	private void getOrderedQueryList(File f, File output) throws IOException, ParseException, FileNotFoundException {
 
-		int lineNo =0;
-		boolean finished = false;
-		do {
-			if (lines.get(lineNo).contains(dateFormat.format(startDate)+";"))
-			{
-				do{
-					printer.println(lines.get(lineNo));
-					lineNo++;
-
-				}while(!lines.get(lineNo).contains(dateFormat.format(endDate)+";"));
-				finished = true;
-			}
-			lineNo++;
-		}while(!finished || lineNo != lines.size());	
-
-		printer.close();
-	}
-
-	private static void getOrderedQueryList(File folder, File output) throws IOException, ParseException, FileNotFoundException {
-
-		File[] files = folder.listFiles();
 		SortedMap<Date, List<String>> map = new TreeMap<>();
 
-		for (File f : files)
+		List<String> lines = FileUtils.readLines(f);
+		for (int i = 0; i < lines.size();i++)
 		{
-			List<String> lines = FileUtils.readLines(f);
-			for (int i = 0; i < lines.size();i++)
+			String sql = "";
+			String timestamp = "";
+			if (lines.get(i).contains(" SQL: "))
 			{
-				String sql = "";
-				String timestamp = "";
-				if (lines.get(i).contains(" SQL: "))
+				timestamp = lines.get(i-1).substring(0,20).replace(",", "");
+				do {
+					sql = sql + " " + lines.get(i);
+					i++;
+
+				} while (i < lines.size() && !lines.get(i).contains("oracle.jdbc.driver.OracleStatement doExecuteWithTimeout") );
+
+				sql = sql.trim();
+				sql = sql.replaceAll("^CONFIG: .* SQL: ", "");
+				sql = sql.split("java\\.lang\\.Throwable")[0];
+				sql = sql.replaceAll("(\n|\r)", "");
+				sql = sql.replaceAll("       ", " ");
+				sql = sql.replaceAll("    ", " ");
+
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+				Date date = dateFormat.parse(timestamp);
+
+				if (map.containsKey(date))
 				{
-					timestamp = lines.get(i-1).substring(0,20).replace(",", "");
-					do {
-						sql = sql + " " + lines.get(i);
-						i++;
-
-					} while (i < lines.size() && !lines.get(i).contains("oracle.jdbc.driver.OracleStatement doExecuteWithTimeout") );
-
-					sql = sql.trim();
-					sql = sql.replaceAll("^CONFIG: .* SQL: ", "");
-					sql = sql.split("java\\.lang\\.Throwable")[0];
-					sql = sql.replaceAll("(\n|\r)", "");
-					sql = sql.replaceAll("       ", " ");
-					sql = sql.replaceAll("    ", " ");
-
-					SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
-					Date date = dateFormat.parse(timestamp);
-
-					if (map.containsKey(date))
-					{
-						List<String> values = map.get(date);
-						values.add(sql);
-						map.put(date, values);
-					}
-					else
-					{
-						List<String> values = new ArrayList<String>();
-						values.add(sql);
-						map.put(date, values);
-					}
-
-
+					List<String> values = map.get(date);
+					values.add(sql);
+					map.put(date, values);
 				}
+				else
+				{
+					List<String> values = new ArrayList<String>();
+					values.add(sql);
+					map.put(date, values);
+				}
+
+
 			}
+			
 		}
 
 		saveTreeMap(map,output);

@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.ParseException;
 
 import org.apache.tools.ant.Project;
 
@@ -15,6 +16,7 @@ import gts.modernization.model.CST.Leaf;
 import gts.modernization.model.CST.Node;
 import gts.modernization.model.Gra2MoL.Core.ViewDefinition;
 import gts.modernization.util.Gra2MoLDinamicInterpreterAntTask;
+import uk.ac.york.mhe504.dblm.datacapture.OJDBCLogProcessor;
 
 /**
  * This provides a command line interface for DBLModeller
@@ -25,7 +27,7 @@ import gts.modernization.util.Gra2MoLDinamicInterpreterAntTask;
 
 public final class DBLModellerCommandLine {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ParseException {
 		
 		if (args.length == 3)
 		{
@@ -45,11 +47,15 @@ public final class DBLModellerCommandLine {
 						"gra2molModel.ecore", "CSTModel.ecore"});
 			}
 			else if ("-logprocess".equals(args[0])){
-				
+				new OJDBCLogProcessor().execute(new File(args[1]), args[1]);
 			}
 			else{
 				printHelp();
 			}
+
+		}
+		else if (args.length == 2)
+		{
 
 		}
 		else{
@@ -98,8 +104,8 @@ public final class DBLModellerCommandLine {
 
 	private static void printHelp() {
 		System.out.println("Incorrect number of arguements");
-		System.out.println("Useage:");
-		System.out.println("\t -extract dump.sql metrics.csv");
+		System.out.println("Usage:");
+		System.out.println("\t -extract sql_file_name measurements_file_name");
 		System.out.println("\t -logprocess dump.sql metrics.csv");
 	}
 	
