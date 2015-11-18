@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.ParseException;
 
 import org.apache.tools.ant.Project;
 
@@ -17,6 +16,7 @@ import gts.modernization.model.CST.Node;
 import gts.modernization.model.Gra2MoL.Core.ViewDefinition;
 import gts.modernization.util.Gra2MoLDinamicInterpreterAntTask;
 import uk.ac.york.mhe504.dblm.datacapture.OJDBCLogProcessor;
+import uk.ac.york.mhe504.dblm.datacapture.WikipediaLogProcessor;
 
 /**
  * This provides a command line interface for DBLModeller
@@ -27,7 +27,7 @@ import uk.ac.york.mhe504.dblm.datacapture.OJDBCLogProcessor;
 
 public final class DBLModellerCommandLine {
 
-	public static void main(String[] args) throws IOException, ParseException {
+	public static void main(String[] args) throws Exception {
 		
 		if (args.length == 3)
 		{
@@ -47,7 +47,7 @@ public final class DBLModellerCommandLine {
 						"gra2molModel.ecore", "CSTModel.ecore"});
 			}
 			else if ("-logprocess".equals(args[0])){
-				new OJDBCLogProcessor().execute(new File(args[1]), args[1]);
+				new OJDBCLogProcessor().execute(new File(args[1]), args[2]);
 			}
 			else{
 				printHelp();
@@ -56,7 +56,9 @@ public final class DBLModellerCommandLine {
 		}
 		else if (args.length == 2)
 		{
-
+			if ("-wikipedia".equals(args[0])){
+				new WikipediaLogProcessor().execute(args[1]);
+			}
 		}
 		else{
 			printHelp();

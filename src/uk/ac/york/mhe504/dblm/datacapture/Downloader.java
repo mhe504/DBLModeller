@@ -9,7 +9,15 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.zip.GZIPInputStream;
-public class Downloader implements Runnable {
+
+/**
+ * This class is used by {@link uk.ac.york.mhe504.dblm.datacapture.WikipediaLogProcessor}
+ * to download and uncompress the required files.
+ * 
+ * @author mhe504@york.ac.uk
+ *
+ */
+class Downloader implements Runnable {
 
 	private URL url;
 	private String filename;
@@ -126,7 +134,7 @@ public class Downloader implements Runnable {
 			}
  
 		} catch (IOException ioe){
-			System.out.println("lbzip2 is not installed, performance will be serious reduced");
+			System.out.println("lbzip2 is not installed, performance will be seriously reduced");
 			
 			try {
 				System.out.println("bzip2 -d " + filename);

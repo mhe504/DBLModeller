@@ -26,28 +26,33 @@ import org.apache.commons.io.FileUtils;
 import org.grep4j.core.model.Profile;
 import org.grep4j.core.model.ProfileBuilder;
 
-
+/**
+ * This class downloads the Wikipedia log files and database
+ * dumps, then uses these to produce CSV input required for 
+ * DBLModeller.
+ * 
+ * @author mhe504@york.ac.uk
+ *
+ */
 public class WikipediaLogProcessor {
 
-	private static final File TARGET_FILE_URLS = new File("log-urls.csv");
+	private Map<String, Long> requests = new HashMap<> ();
+	private Map<String, Long> pages = new HashMap<> ();
+	private Map<String, Long> pagesNotRequested = new HashMap<> ();
+	private Map<String, Long> dbSizes = new HashMap<> ();
+	private Map<String, Long> totalEdits = new HashMap<> ();
 	
-	private static Map<String, Long> requests = new HashMap<> ();
-	private static Map<String, Long> pages = new HashMap<> ();
-	private static Map<String, Long> pagesNotRequested = new HashMap<> ();
-	private static Map<String, Long> dbSizes = new HashMap<> ();
-	private static Map<String, Long> totalEdits = new HashMap<> ();
+	private Set<String> logFile;
+	private Set<String> titleFile;
 	
-	private static Set<String> logFile;
-	private static Set<String> titleFile;
-	
-	private static Map<String, String> urls = new HashMap<>();
-	private static Map<String, String> completeDbDumpURLs = new HashMap<>();
-	private static Map<String, String> siteStatsSqlURLs = new HashMap<>();
+	private Map<String, String> urls = new HashMap<>();
+	private Map<String, String> completeDbDumpURLs = new HashMap<>();
+	private Map<String, String> siteStatsSqlURLs = new HashMap<>();
 
 	
-	public static void main(String[] args) throws Exception {
+	public void execute(String urls_file) throws Exception {
 		
-	    loadFileURLs();
+	    loadFileURLs(urls_file);
 	    
 	    for (Map.Entry<String, String> entry : urls.entrySet()) {
 	    		
@@ -107,7 +112,7 @@ public class WikipediaLogProcessor {
 
 	}
 	
-	private static void saveResult() {
+	private void saveResult() {
 		try {
 			PrintWriter writer = new PrintWriter(new FileOutputStream(new File("output.csv")));
 			writer.println("PeriodAlias, PeriodStart, PeriodEnd, EntityCount, EntityReads, EntityWrites, UnusedEntities, DatabaseSize");
@@ -154,7 +159,7 @@ public class WikipediaLogProcessor {
 		
 	}
 
-	private static void loadTitleFile(String targetFile, String id) {
+	private void loadTitleFile(String targetFile, String id) {
 		
 		System.out.println("loadTitleFile(" + targetFile + "," + id + ") : starting");
 		
@@ -173,7 +178,7 @@ public class WikipediaLogProcessor {
 	    }
 	}
 
-	private static void loadLogFile(String targetFile){
+	private void loadLogFile(String targetFile){
 	    try {
 			System.out.println("loadLogFile(" + targetFile + ") : starting");
 			long startTime = System.currentTimeMillis();
@@ -212,9 +217,9 @@ public class WikipediaLogProcessor {
 	
 	}
 
-	private static void loadFileURLs() {
+	private void loadFileURLs(String url_file) {
 	    try {
-	    	List<String> allLines  = FileUtils.readLines(TARGET_FILE_URLS);
+	    	List<String> allLines  = FileUtils.readLines(new File(url_file));
 	    	
 	    	for (String s : allLines){
 	    		urls.put(s.split(",")[0], s.split(",")[1]);

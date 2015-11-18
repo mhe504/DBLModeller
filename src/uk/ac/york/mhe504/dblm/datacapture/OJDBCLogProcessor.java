@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,18 +36,31 @@ public class OJDBCLogProcessor {
 
 		getOrderedQueryList(targetFile,new File("OrderedQueryList.csv"));
 		outputQueryTypeCounts("OrderedQueryList.csv", "Counts.csv");
-		resultsToCSV("OrderedQueryList.csv", "measurements.csv", entity,5);
+		resultsToCSV("OrderedQueryList.csv", "measurements.csv", entity);
 		System.out.println("OJDBC log proccesing finished!");
 	}
 		
 	
-	private static void resultsToCSV(String queryList, String outputFile, String databaseEntity, int splits) throws IOException, ParseException {
+	private static void resultsToCSV(String queryList, String outputFile, String databaseEntity) throws IOException, ParseException {
 		
 		List<String> file = FileUtils.readLines(new File(queryList));
 		
-		DateFormat df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss", Locale.ENGLISH);
-		Date startTime = df.parse(file.get(0).split(";")[0]);
-		Date endTime = df.parse(file.get(file.size()-1).split(";")[0]);
+		Date startTime = null;
+		Date endTime = null;
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.US);
+		try{
+			startTime = dateFormat.parse(file.get(0).split(";")[0]);
+			endTime = dateFormat.parse(file.get(file.size()-1).split(";")[0]);
+		}catch (ParseException e) {
+			try{
+				dateFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss aa", Locale.US);
+				startTime = dateFormat.parse(file.get(0).split(";")[0]);
+				endTime = dateFormat.parse(file.get(file.size()-1).split(";")[0]);
+			}catch (ParseException e2) {
+				e2.printStackTrace();
+				System.out.println();
+			}
+		}
 		
 		List<Date> dates = new ArrayList<>();
 		Date current = startTime;
@@ -225,7 +237,7 @@ public class OJDBCLogProcessor {
 	}
 
 
-	private void getOrderedQueryList(File f, File output) throws IOException, ParseException, FileNotFoundException {
+	private void getOrderedQueryList(File f, File output) throws IOException, FileNotFoundException {
 
 		System.out.println("Producing OrderQueryList for " + f.toString());
 		SortedMap<Date, List<String>> map = new TreeMap<>();
@@ -239,7 +251,10 @@ public class OJDBCLogProcessor {
 			String timestamp = "";
 			if (lines.get(i).contains(" SQL: "))
 			{
-				timestamp = lines.get(i-1).substring(0,20).replace(",", "");
+				if (lines.get(i-1).contains(" AM ") | lines.get(i-1).contains(" PM "))
+					timestamp = lines.get(i-1).substring(0,24).replace(",", "");
+				else
+					timestamp = lines.get(i-1).substring(0,20).replace(",", "");
 				do {
 					sql = sql + " " + lines.get(i);
 					i++;
@@ -253,8 +268,20 @@ public class OJDBCLogProcessor {
 				sql = sql.replaceAll("       ", " ");
 				sql = sql.replaceAll("    ", " ");
 
-				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
-				Date date = dateFormat.parse(timestamp);
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.US);
+				Date date = null;
+				try{
+					date =dateFormat.parse(timestamp);
+				}catch (ParseException e) {
+					try{
+						dateFormat = new SimpleDateFormat("MMM dd yyyy hh:mm:ss aa", Locale.US);
+						date =dateFormat.parse(timestamp);
+					}catch (ParseException e2) {
+						e2.printStackTrace();
+						System.out.println();
+					}
+				}
+				
 
 				if (map.containsKey(date))
 				{
@@ -285,7 +312,7 @@ public class OJDBCLogProcessor {
 		for (Entry<Date, List<String>> entry : map.entrySet()) {
 
 			Date date = entry.getKey();
-			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.US);
 			String timestamp = dateFormat.format(date);
 			List<String> values = entry.getValue();
 
