@@ -6,14 +6,16 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Paths;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -22,48 +24,73 @@ import java.util.TreeMap;
 
 import org.apache.commons.io.FileUtils;
 
+/**
+ * This class transforms a Oracle JDBC log file into 
+ * the CSV input required for DBLModeller.
+ * 
+ *  @author mhe504@york.ac.uk
+ * 
+ */
 public class OJDBCLogProcessor {
-
-	/* Input: folder of JDBC log files
-	 * Output: CSV metric file for the SMM transformation. A CSV file for each time interval
-	 * listing the tables and the queries received for each.
-	 * 
-	 */
 	
 	public void execute(File targetFile, String entity) throws IOException, ParseException {
 
 		getOrderedQueryList(targetFile,new File("OrderedQueryList.csv"));
 		outputQueryTypeCounts("OrderedQueryList.csv", "Counts.csv");
-		resultsToCSV("Counts.csv", "measurements.csv", entity);		
+		resultsToCSV("OrderedQueryList.csv", "measurements.csv", entity,5);
+		System.out.println("OJDBC log proccesing finished!");
 	}
 		
 	
-	private static void resultsToCSV(String metricFile, String outputFile, String databaseEntity) throws IOException {
+	private static void resultsToCSV(String queryList, String outputFile, String databaseEntity, int splits) throws IOException, ParseException {
 		
-		List<String> file = FileUtils.readLines(new File(metricFile));
-		String[] timestamps = file.get(0).split(",");
-		int reads, writes;
-		reads = writes = 0;
+		List<String> file = FileUtils.readLines(new File(queryList));
 		
-		for (int i =2; i < file.size(); i++)
+		DateFormat df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss", Locale.ENGLISH);
+		Date startTime = df.parse(file.get(0).split(";")[0]);
+		Date endTime = df.parse(file.get(file.size()-1).split(";")[0]);
+		
+		List<Date> dates = new ArrayList<>();
+		Date current = startTime;
+		do
 		{
-			if (file.get(i).contains(databaseEntity))
-			{
-				String[] line = file.get(i).split(",");
-				reads = Integer.valueOf(line[1].trim());
-				writes = Integer.valueOf(line[2].trim()) + Integer.valueOf(line[3].trim()) + Integer.valueOf(line[4].trim()) + Integer.valueOf(line[5].trim());
-			}
-			
-		}
+			Calendar cal = Calendar.getInstance();
+		    cal.setTime(current);
+		    cal.set(Calendar.MINUTE, 0);
+		    cal.set(Calendar.SECOND, 0);
+		    cal.set(Calendar.MILLISECOND, 0);
+		    dates.add(cal.getTime());
+		    cal.add(Calendar.HOUR_OF_DAY, 1);
+		    current = cal.getTime();
+		}while(current.compareTo(endTime)<0);
 		
-		String fileNameOnly = Paths.get(metricFile).getFileName().toString();
-		File output = new File(outputFile);
-		if (!output.exists())
-			output.createNewFile();
-
-		FileWriter fw = new FileWriter(output,true);
+		FileWriter fw = new FileWriter(outputFile,true);
 		BufferedWriter bufferWritter = new BufferedWriter(fw);
-        bufferWritter.write(fileNameOnly + ", " + timestamps[0] + ", " + timestamps[1] + ", " + reads + ", " + writes + ", , \n");
+		bufferWritter.write("[SYSTEM NAME], [SCOPE], " + databaseEntity + "\n");
+				 
+		for (Date d : dates)
+		{
+			Calendar cal = Calendar.getInstance(); 
+		    cal.setTime(d);
+		    cal.set(Calendar.MINUTE, 59);
+		    cal.set(Calendar.SECOND, 59);
+		    Date end = cal.getTime();
+			int reads, writes;
+			reads = writes = 0;
+			for (int i =2; i < file.size(); i++)
+			{
+				String sql = file.get(i);
+				if (sql.contains(databaseEntity))
+				{
+					if (sql.matches(".*SELECT.*FROM.*"))		
+						reads++;
+					else if (sql.matches(".*INSERT INTO.*") || sql.matches(".*DELETE FROM.*") || sql.matches(".*MERGE INTO.*") || sql.matches(".*MERGE INTO.*") || sql.matches(".*UPDATE .*SET.*"))
+						writes++;
+				}
+			}
+			bufferWritter.write("[ALAIS]" + ", " + d.toString() + ", " + end.toString() + ", " + reads + ", " + writes + ",[UNUSED ENTITIES] ,[DB SIZE] \n");
+		}
+
         bufferWritter.close();
 		
 	}
@@ -71,6 +98,7 @@ public class OJDBCLogProcessor {
 
 	private static void outputQueryTypeCounts (String logFileName, String outputFileName) throws IOException
 	{
+		System.out.println("Producing query type counts");
 		List<String> file = FileUtils.readLines(new File(logFileName));
 		Map<String, Integer> tableSelects = new HashMap<>();
 		Map<String, Integer> tableInserts = new HashMap<>();
@@ -81,9 +109,7 @@ public class OJDBCLogProcessor {
 		for (int i = 0; i < file.size();i++)
 		{
 			String sql = file.get(i).split(";")[1];
-
 			countReadWriteFrequenciesVerbose(sql,tableSelects,tableInserts,tableUpdates,tableDeletes,tableMerge);
-
 		}
 		
 		Set<String> tableNames = new HashSet<>();
@@ -101,6 +127,7 @@ public class OJDBCLogProcessor {
 			printer.println(outputLine.replace("null", "0"));
 		}
 		printer.close();
+		System.out.println("Query type counts complete");
 	
 	}
 
@@ -200,9 +227,12 @@ public class OJDBCLogProcessor {
 
 	private void getOrderedQueryList(File f, File output) throws IOException, ParseException, FileNotFoundException {
 
+		System.out.println("Producing OrderQueryList for " + f.toString());
 		SortedMap<Date, List<String>> map = new TreeMap<>();
 
 		List<String> lines = FileUtils.readLines(f);
+		System.out.println("\tLoaded:" + f.toString());
+		System.out.println("\tStarted Proccessing");
 		for (int i = 0; i < lines.size();i++)
 		{
 			String sql = "";
@@ -239,12 +269,12 @@ public class OJDBCLogProcessor {
 					map.put(date, values);
 				}
 
-
 			}
 			
 		}
 
 		saveTreeMap(map,output);
+		System.out.println("OrderQueryList saved");
 	}
 
 	private static void saveTreeMap(SortedMap<Date, List<String>> map, File output) throws FileNotFoundException {
