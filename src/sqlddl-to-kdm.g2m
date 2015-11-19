@@ -51,7 +51,7 @@ rule 'createSequenceValue'
 	to kdm::code::ItemUnit
 	queries
 	mappings
-		name = "Value;POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Integer,model.codeElement.codeElement;";
+		name = "Value;DBLM_REF:type,Datatypes.Abstract SQL Types.Integer,model.codeElement.codeElement;";
 end_rule
 
 rule 'createBoolean'
@@ -216,15 +216,15 @@ rule 'createFK'
 		targetCol4: /fk/reference_columns/#id[4];
 	mappings
 		if (targetCol4.hasResults) then
-			name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation,(" + targetCol.STR + " AND " + targetCol2.STR + " AND " + targetCol3.STR + " AND " + targetCol4.STR + "),itemUnit;;POSTPROCESS_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
+			name  = ";DBLM_ADD:" + targetTable.STR + ",dataElement,*;;DBLM_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation,(" + targetCol.STR + " AND " + targetCol2.STR + " AND " + targetCol3.STR + " AND " + targetCol4.STR + "),itemUnit;;DBLM_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
 		else
 			if (targetCol3.hasResults) then
-				name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation,(" + targetCol.STR + " AND " + targetCol2.STR + " AND " + targetCol3.STR + "),itemUnit;;POSTPROCESS_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
+				name  = ";DBLM_ADD:" + targetTable.STR + ",dataElement,*;;DBLM_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation,(" + targetCol.STR + " AND " + targetCol2.STR + " AND " + targetCol3.STR + "),itemUnit;;DBLM_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
 			else		
 				if (targetCol2.hasResults) then
-					name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation,(" + targetCol.STR + " AND " + targetCol2.STR + "),itemUnit;;POSTPROCESS_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
+					name  = ";DBLM_ADD:" + targetTable.STR + ",dataElement,*;;DBLM_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation,(" + targetCol.STR + " AND " + targetCol2.STR + "),itemUnit;;DBLM_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
 				else
-					name  = ";POSTPROCESS_ADD:" + targetTable.STR + ",dataElement,*;;POSTPROCESS_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation," + targetCol.STR + ",itemUnit;;POSTPROCESS_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
+					name  = ";DBLM_ADD:" + targetTable.STR + ",dataElement,*;;DBLM_ADD:" + targetTable.STR + "_" + targetCol.STR + ",dataElement,data:ReferenceKey,implementation," + targetCol.STR + ",itemUnit;;DBLM_ADD:" +targetTable.STR + "_" + targetCol.STR+ ",dataElement,data:KeyRelation,from," + targetTable.STR + "." + targetTable.STR + "_" + targetCol.STR + ",to,this." + fkName.STR  + ",dataElement;";
 				end_if
 			end_if		
 		end_if
@@ -240,15 +240,15 @@ rule 'mapPK'
 		col4 : /pk/#id[3];
 	mappings
 		if (col4.hasResults) then
-			name = "PrimaryKey" + ";POSTPROCESS_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col3.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col4.STR + ",model.dataElement.dataElement.itemUnit;";
+			name = "PrimaryKey" + ";DBLM_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col3.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col4.STR + ",model.dataElement.dataElement.itemUnit;";
 		else
 			if (col3.hasResults) then
-				name = "PrimaryKey" + ";POSTPROCESS_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col3.STR + ",model.dataElement.dataElement.itemUnit;";
+				name = "PrimaryKey" + ";DBLM_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col3.STR + ",model.dataElement.dataElement.itemUnit;";
 			else
 				if (col2.hasResults) then
-					name = "PrimaryKey" + ";POSTPROCESS_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;";
+					name = "PrimaryKey" + ";DBLM_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;";
 				else
-					name = "PrimaryKey" + ";POSTPROCESS_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  ";			
+					name = "PrimaryKey" + ";DBLM_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  ";			
 				end_if	
 			end_if
 		end_if
@@ -265,15 +265,15 @@ rule 'mapKeyConstraint'
 		col4 : /pk/target_cols/#id[3];
 	mappings
 		if (col4.hasResults) then
-			name = kname.STR + ";POSTPROCESS_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col3.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col4.STR + ",model.dataElement.dataElement.itemUnit;";
+			name = kname.STR + ";DBLM_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col3.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col4.STR + ",model.dataElement.dataElement.itemUnit;";
 		else
 			if (col3.hasResults) then
-				name = kname.STR + ";POSTPROCESS_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col3.STR + ",model.dataElement.dataElement.itemUnit;";
+				name = kname.STR + ";DBLM_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col3.STR + ",model.dataElement.dataElement.itemUnit;";
 			else
 				if (col2.hasResults) then
-					name = kname.STR + ";POSTPROCESS_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;";
+					name = kname.STR + ";DBLM_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;";
 				else
-					name = kname.STR + ";POSTPROCESS_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  ";			
+					name = kname.STR + ";DBLM_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  ";			
 				end_if	
 			end_if
 		end_if
@@ -291,15 +291,15 @@ rule 'mapKey'
 		col4 : /k/#id[4];
 	mappings
 		if (col4.hasResults) then
-			name = kname.STR + ";POSTPROCESS_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col3.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col4.STR + ",model.dataElement.dataElement.itemUnit;";
+			name = kname.STR + ";DBLM_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col3.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col4.STR + ",model.dataElement.dataElement.itemUnit;";
 		else
 			if (col3.hasResults) then
-				name = kname.STR + ";POSTPROCESS_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col3.STR + ",model.dataElement.dataElement.itemUnit;";
+				name = kname.STR + ";DBLM_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col3.STR + ",model.dataElement.dataElement.itemUnit;";
 			else
 				if (col2.hasResults) then
-					name = kname.STR + ";POSTPROCESS_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;";
+					name = kname.STR + ";DBLM_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;";
 				else
-					name = kname.STR + ";POSTPROCESS_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  ";			
+					name = kname.STR + ";DBLM_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  ";			
 				end_if	
 			end_if
 		end_if
@@ -316,15 +316,15 @@ rule 'mapUKey'
 		col4 : /k/#id[4];
 	mappings
 		if (col4.hasResults) then
-			name = kname.STR + ";POSTPROCESS_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col3.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col4.STR + ",model.dataElement.dataElement.itemUnit;";
+			name = kname.STR + ";DBLM_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col3.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col4.STR + ",model.dataElement.dataElement.itemUnit;";
 		else
 			if (col3.hasResults) then
-				name = kname.STR + ";POSTPROCESS_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col3.STR + ",model.dataElement.dataElement.itemUnit;";
+				name = kname.STR + ";DBLM_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col3.STR + ",model.dataElement.dataElement.itemUnit;";
 			else
 				if (col2.hasResults) then
-					name = kname.STR + ";POSTPROCESS_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";POSTPROCESS_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;";
+					name = kname.STR + ";DBLM_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  " + ";DBLM_REF:implementation,this.this.this." + col2.STR + ",model.dataElement.dataElement.itemUnit;";
 				else
-					name = kname.STR + ";POSTPROCESS_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  ";			
+					name = kname.STR + ";DBLM_REF:implementation,this.this.this." + col1.STR + ",model.dataElement.dataElement.itemUnit;  ";			
 				end_if	
 			end_if
 		end_if
@@ -340,7 +340,7 @@ rule 'createAlterTables'
 		addUK:  /at/#add{UNIQUE.exists};
 		isFormat1: /at/add/#id[1];
 	mappings
-		name  = ";POSTPROCESS_ADD:" + tname.STR + ",dataElement,*;";
+		name  = ";DBLM_ADD:" + tname.STR + ",dataElement,*;";
 		if (isFormat1.hasResults) then 
 			itemUnit = execute alterColPK addPK;
 		else
@@ -357,7 +357,7 @@ rule 'alterColUK'
 		affectedColName: /addnode/#id[1];
 		pkName: /addnode/#id[0];
 	mappings
-		name  = ";POSTPROCESS_ADD:" + pkName.STR + ",dataElement,data:UniqueKey,implementation,"+ affectedColName.STR +",itemUnit;";
+		name  = ";DBLM_ADD:" + pkName.STR + ",dataElement,data:UniqueKey,implementation,"+ affectedColName.STR +",itemUnit;";
 end_rule
 
 rule 'alterColPK'
@@ -367,7 +367,7 @@ rule 'alterColPK'
 		affectedColName: /addnode/#id[1];
 		pkName: /addnode/#id[0];
 	mappings
-		name  = ";POSTPROCESS_ADD:" + pkName.STR + ",dataElement,data:UniqueKey,implementation,"+ affectedColName.STR +",itemUnit;";
+		name  = ";DBLM_ADD:" + pkName.STR + ",dataElement,data:UniqueKey,implementation,"+ affectedColName.STR +",itemUnit;";
 end_rule
 
 rule 'alterColPK2'
@@ -376,7 +376,7 @@ rule 'alterColPK2'
 	queries
 		affectedColName: /addnode/#id[0];
 	mappings
-		name  = ";POSTPROCESS_ADD:PrimaryKey,dataElement,data:UniqueKey,implementation,"+ affectedColName.STR +",itemUnit;";
+		name  = ";DBLM_ADD:PrimaryKey,dataElement,data:UniqueKey,implementation,"+ affectedColName.STR +",itemUnit;";
 end_rule
 
 rule 'alterColFK'
@@ -388,7 +388,7 @@ rule 'alterColFK'
 		toTbl: /addnode/#id[2];
 		toCol: /addnode/#id[3];
 	mappings
-		name  = ";POSTPROCESS_ADD:" + name.STR + ",dataElement,data:ReferenceKey,implementation," + fromCol.STR + ",itemUnit;;POSTPROCESS_ADD:" + name.STR + ",dataElement,data:KeyRelation,from," + fromCol.STR + ",to," + toTbl.STR + "." + toCol.STR + ",dataElement;";
+		name  = ";DBLM_ADD:" + name.STR + ",dataElement,data:ReferenceKey,implementation," + fromCol.STR + ",itemUnit;;DBLM_ADD:" + name.STR + ",dataElement,data:KeyRelation,from," + fromCol.STR + ",to," + toTbl.STR + "." + toCol.STR + ",dataElement;";
 end_rule
 
 
@@ -401,7 +401,7 @@ rule 'mapIndex'
 		table : /ci/#id[1];
 		column : /ci/#id[2];
 	mappings
-		name = name.STR + ";POSTPROCESS_MOVE:" + table.STR + ",dataElement;" + ";POSTPROCESS_REF:implementation,this.this." + table.STR + "." + column.STR + ",model.dataElement.dataElement.itemUnit;";
+		name = name.STR + ";DBLM_MOVE:" + table.STR + ",dataElement;" + ";DBLM_REF:implementation,this.this." + table.STR + "." + column.STR + ",model.dataElement.dataElement.itemUnit;";
 end_rule
 
 rule 'mapUniqueIndex'
@@ -414,9 +414,9 @@ rule 'mapUniqueIndex'
 		column : /ci/#id[2];
 	mappings
 		if (name.hasResults) then
-			name = name.STR + ";POSTPROCESS_MOVE:" + table.STR + ",dataElement;" + ";POSTPROCESS_REF:implementation,this.this." + table.STR + "." + column.STR + ",model.dataElement.dataElement.itemUnit;";		
+			name = name.STR + ";DBLM_MOVE:" + table.STR + ",dataElement;" + ";DBLM_REF:implementation,this.this." + table.STR + "." + column.STR + ",model.dataElement.dataElement.itemUnit;";		
 		else
-			name = pname.PRIMARY + ";POSTPROCESS_MOVE:" + table.STR + ",dataElement;" + ";POSTPROCESS_REF:implementation,this.this." + table.STR + "." + column.STR + ",model.dataElement.dataElement.itemUnit;";		
+			name = pname.PRIMARY + ";DBLM_MOVE:" + table.STR + ",dataElement;" + ";DBLM_REF:implementation,this.this." + table.STR + "." + column.STR + ",model.dataElement.dataElement.itemUnit;";		
 		end_if
 		
 end_rule
@@ -438,65 +438,65 @@ rule 'mapColumns'
 	mappings
 		if(id2.hasResults) then
 			if(stringType.hasResults) then
-				name = id.TEXT_TYPE + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Character String,model.codeElement.codeElement;";
+				name = id.TEXT_TYPE + ";DBLM_REF:type,Datatypes.Abstract SQL Types.Character String,model.codeElement.codeElement;";
 				size = ext IntegerCastExtension(stringType, 2);
 			end_if
 			if(charType.hasResults) then
-				name = id.TEXT_TYPE + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Character,model.codeElement.codeElement;";
+				name = id.TEXT_TYPE + ";DBLM_REF:type,Datatypes.Abstract SQL Types.Character,model.codeElement.codeElement;";
 				size = ext IntegerCastExtension(charType, 2);
 			end_if
 			if(decimalType.hasResults) then
-				name = id.TEXT_TYPE + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Fixed-point Number,model.codeElement.codeElement;";
+				name = id.TEXT_TYPE + ";DBLM_REF:type,Datatypes.Abstract SQL Types.Fixed-point Number,model.codeElement.codeElement;";
 				size = ext IntegerCastExtension(decimalType, 2);
 			end_if
 			if(intType.hasResults) then
-				name = id.TEXT_TYPE + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Integer,model.codeElement.codeElement;";
+				name = id.TEXT_TYPE + ";DBLM_REF:type,Datatypes.Abstract SQL Types.Integer,model.codeElement.codeElement;";
 				size = ext IntegerCastExtension(intType, 2);
 			end_if
 			if(floatType.hasResults) then
-				name = id.TEXT_TYPE + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Floating-point Number,model.codeElement.codeElement;";
+				name = id.TEXT_TYPE + ";DBLM_REF:type,Datatypes.Abstract SQL Types.Floating-point Number,model.codeElement.codeElement;";
 				size = ext IntegerCastExtension(floatType, 2);
 			end_if
 			if(bitStringType.hasResults) then
-				name = id.TEXT_TYPE + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Binary String,model.codeElement.codeElement;";
+				name = id.TEXT_TYPE + ";DBLM_REF:type,Datatypes.Abstract SQL Types.Binary String,model.codeElement.codeElement;";
 				size = ext IntegerCastExtension(bitStringType, 2);
 			end_if
 			if(dateType.hasResults) then
-				name = id.TEXT_TYPE + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Date/Time,model.codeElement.codeElement;";
+				name = id.TEXT_TYPE + ";DBLM_REF:type,Datatypes.Abstract SQL Types.Date/Time,model.codeElement.codeElement;";
 			end_if
 			if(seqType.hasResults) then
-				name = id.TEXT_TYPE + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Auto-Increment,model.codeElement.codeElement;";
+				name = id.TEXT_TYPE + ";DBLM_REF:type,Datatypes.Abstract SQL Types.Auto-Increment,model.codeElement.codeElement;";
 			end_if
 		else
 			if(stringType.hasResults) then
-				name = id.STR + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Character String,model.codeElement.codeElement;";
+				name = id.STR + ";DBLM_REF:type,Datatypes.Abstract SQL Types.Character String,model.codeElement.codeElement;";
 				size = ext IntegerCastExtension(stringType, 2);
 			end_if
 			if(charType.hasResults) then
-				name = id.STR + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Character,model.codeElement.codeElement;";
+				name = id.STR + ";DBLM_REF:type,Datatypes.Abstract SQL Types.Character,model.codeElement.codeElement;";
 				size = ext IntegerCastExtension(charType, 2);
 			end_if
 			if(decimalType.hasResults) then
-				name = id.STR + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Fixed-point Number,model.codeElement.codeElement;";
+				name = id.STR + ";DBLM_REF:type,Datatypes.Abstract SQL Types.Fixed-point Number,model.codeElement.codeElement;";
 				size = ext IntegerCastExtension(decimalType, 2);
 			end_if
 			if(intType.hasResults) then
-				name = id.STR + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Integer,model.codeElement.codeElement;";
+				name = id.STR + ";DBLM_REF:type,Datatypes.Abstract SQL Types.Integer,model.codeElement.codeElement;";
 				size = ext IntegerCastExtension(intType, 2);
 			end_if
 			if(floatType.hasResults) then
-				name = id.STR + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Floating-point Number,model.codeElement.codeElement;";
+				name = id.STR + ";DBLM_REF:type,Datatypes.Abstract SQL Types.Floating-point Number,model.codeElement.codeElement;";
 				size = ext IntegerCastExtension(floatType, 2);
 			end_if
 			if(bitStringType.hasResults) then
-				name = id.STR + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Binary String,model.codeElement.codeElement;";
+				name = id.STR + ";DBLM_REF:type,Datatypes.Abstract SQL Types.Binary String,model.codeElement.codeElement;";
 				size = ext IntegerCastExtension(bitStringType, 2);
 			end_if
 			if(dateType.hasResults) then
-				name = id.STR + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Date/Time,model.codeElement.codeElement;";
+				name = id.STR + ";DBLM_REF:type,Datatypes.Abstract SQL Types.Date/Time,model.codeElement.codeElement;";
 			end_if
 			if(seqType.hasResults) then
-				name = id.STR + ";POSTPROCESS_REF:type,Datatypes.Abstract SQL Types.Auto-Increment,model.codeElement.codeElement;";
+				name = id.STR + ";DBLM_REF:type,Datatypes.Abstract SQL Types.Auto-Increment,model.codeElement.codeElement;";
 			end_if
 		end_if
 end_rule

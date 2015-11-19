@@ -20,9 +20,9 @@ public abstract class AbstractAnnotationProcessor {
 	public static final String START_CHAR = ":";
 	public static final String FIELD_SEPERATOR_CHAR = ",";
 
-	public static final String REF_STATEMENT_TYPE = "POSTPROCESS_REF";
-	public static final String MOVE_STATEMENT_TYPE = "POSTPROCESS_MOVE";
-	public static final String ADD_STATEMENT_TYPE = "POSTPROCESS_ADD";
+	public static final String REF_STATEMENT_TYPE = "DBLM_REF";
+	public static final String MOVE_STATEMENT_TYPE = "DBLM_MOVE";
+	public static final String ADD_STATEMENT_TYPE = "DBLM_ADD";
 	public static final String ADD_HERE_CHAR = "H";
 	public static final String ADD_ALL_CHAR = "*";
 	

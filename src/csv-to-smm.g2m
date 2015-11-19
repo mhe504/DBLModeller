@@ -31,7 +31,7 @@ rule 'buildDirectMeasure1'
 	to smm::DirectMeasure
 	queries
 	mappings
-		name = "Secondary Storage Usage;POSTPROCESS_REF:trait,System Measures.Size,librairies.measureElements;;POSTPROCESS_REF:scope,System Measures.English Language Site,librairies.measureElements;";
+		name = "Secondary Storage Usage;DBLM_REF:trait,System Measures.Size,librairies.measureElements;;DBLM_REF:scope,System Measures.English Language Site,librairies.measureElements;";
         unit = "MB";
 end_rule
 
@@ -41,7 +41,7 @@ rule 'buildDirectMeasure2'
 	queries
 		entityType: /f//#info_item[2];
 	mappings
-		name = "Unused Entities;POSTPROCESS_REF:trait,System Measures.Number,librairies.measureElements;;POSTPROCESS_REF:scope,System Measures.English Language Site,librairies.measureElements;";
+		name = "Unused Entities;DBLM_REF:trait,System Measures.Number,librairies.measureElements;;DBLM_REF:scope,System Measures.English Language Site,librairies.measureElements;";
         unit = entityType.NAME;
 end_rule
 
@@ -51,7 +51,7 @@ rule 'buildCounting'
 	queries
 		entityType: /f//#info_item[2];
 	mappings
-		name = "Entities;POSTPROCESS_REF:trait,System Measures.Number,librairies.measureElements;;POSTPROCESS_REF:scope,System Measures.English Language Site,librairies.measureElements;";
+		name = "Entities;DBLM_REF:trait,System Measures.Number,librairies.measureElements;;DBLM_REF:scope,System Measures.English Language Site,librairies.measureElements;";
         unit = entityType.NAME;
 end_rule
 
@@ -100,7 +100,7 @@ rule 'createObservedMeasureSizeUE'
 	to smm::ObservedMeasure 
 	queries
 	mappings
-		name = "Database Size;POSTPROCESS_REF:measure,System Measures.Secondary Storage Usage,librairies.measureElements;";
+		name = "Database Size;DBLM_REF:measure,System Measures.Secondary Storage Usage,librairies.measureElements;";
 		measurements = execute createDirectMeasurementSize m5;
 end_rule
 
@@ -122,7 +122,7 @@ rule 'createObservedMeasureRLogs'
 		entityReads: /r//#measurement2;
 		entityWrites: /r//#measurement3;
 	mappings
-		name = "Database Workload;POSTPROCESS_REF:measure,System Measures.Entities,librairies.measureElements;";
+		name = "Database Workload;DBLM_REF:measure,System Measures.Entities,librairies.measureElements;";
 		measurements = execute createDirectMeasurement1 entityCount;
 		measurements = execute createDirectMeasurement2 entityReads;
 		measurements = execute createDirectMeasurement3 entityWrites;
@@ -134,7 +134,7 @@ rule 'createObservedMeasureDB'
 	queries
 		unusedEntities: /r//#measurement4;
 	mappings
-		name = "Legacy Data;POSTPROCESS_REF:measure,System Measures.Unused Entities,librairies.measureElements;";
+		name = "Legacy Data;DBLM_REF:measure,System Measures.Unused Entities,librairies.measureElements;";
 		measurements = execute createDirectMeasurement4 unusedEntities;
 end_rule
 
