@@ -105,10 +105,10 @@ public final class DBLModellerCommandLine {
 	}
 
 	private static void printHelp() {
-		System.out.println("Incorrect number of arguements");
+		System.out.println("Incorrect number of arguments");
 		System.out.println("Usage:");
 		System.out.println("\t -extract sql_file_name measurements_file_name");
-		System.out.println("\t -logprocess dump.sql metrics.csv");
+		System.out.println("\t -logprocess ojdbc.log entity_name");
 	}
 	
 	public static void t2mTransformation(String grammar, String gammarMainRule, 

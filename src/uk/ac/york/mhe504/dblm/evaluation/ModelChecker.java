@@ -9,9 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 /**
- * This class compares the elements in a SQL file
- * with the elements in a KDM file to verify that the 
- * extracted model is complete.
+ * This class compares the elements in a SQL file with the elements in a 
+ * KDM file to verify that the extracted model is complete.
  * 
  * @author mhe504@york.ac.uk
  *
