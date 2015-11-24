@@ -36,7 +36,7 @@ public class OJDBCLogProcessor {
 
 		getOrderedQueryList(targetFile,new File("OrderedQueryList.csv"));
 		outputQueryTypeCounts("OrderedQueryList.csv", "Counts.csv");
-		resultsToCSV("OrderedQueryList.csv", "measurements.csv", entity);
+		resultsToCSV("OrderedQueryList.csv", "Measurements.csv", entity);
 		System.out.println("OJDBC log proccesing finished!");
 	}
 		
@@ -100,7 +100,7 @@ public class OJDBCLogProcessor {
 						writes++;
 				}
 			}
-			bufferWritter.write("[ALAIS]" + ", " + d.toString() + ", " + end.toString() + ", " + reads + ", " + writes + ",[UNUSED ENTITIES] ,[DB SIZE] \n");
+			bufferWritter.write("[ALAIS]" + ", " + d.toString() + ", " + end.toString() + ",[ENTITY COUNT] ," + reads + ", " + writes + ",[UNUSED ENTITIES] ,[DB SIZE] \n");
 		}
 
         bufferWritter.close();

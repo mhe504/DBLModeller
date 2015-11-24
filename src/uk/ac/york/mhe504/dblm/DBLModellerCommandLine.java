@@ -59,6 +59,9 @@ public final class DBLModellerCommandLine {
 			if ("-wikipedia".equals(args[0])){
 				new WikipediaLogProcessor().execute(args[1]);
 			}
+			else{
+				printHelp();
+			}
 		}
 		else{
 			printHelp();
