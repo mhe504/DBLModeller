@@ -11,10 +11,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/* 
+/**
  * This class takes a folder containing Oracle or MySQL DDL dumps, and a text file
  * containing keywords, then outputs a CSV file listing the key words and the number
  * of times they found. 
+ * 
+ * @author mhe504@york.ac.uk
+ * 
  */
 public class KeywordFrequencyCounter {
 	

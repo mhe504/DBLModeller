@@ -6,10 +6,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * This class extracts execution times from the output of console 
- * output of DBLM/Gra2Mol when both are excuted via ant using:
- * -logger org.apache.tools.ant.listener.ProfileLogger
+/**
+ * This class extracts execution times from the output of console output of
+ * DBLM/Gra2Mol when both are executed via ant using the following optition:
+ * -logger org.apache.tools.ant.listener.ProfileLogger.
+ * 
+ * @author mhe504@york.ac.uk
  * 
  */
 public class ProcessResults {
