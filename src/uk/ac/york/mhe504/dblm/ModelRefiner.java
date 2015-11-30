@@ -29,7 +29,7 @@ public class ModelRefiner{
 	
 	public void execute(String path){
 		
-		System.out.println("Model Refinement: executing annoations in " + path + ".");
+		System.out.println("Model Refinement: executing annotations in " + path + ".");
 		long startTime = System.currentTimeMillis();
 
 		modelPath = path.equals("") ? "DDLModel.xmi" : path;
