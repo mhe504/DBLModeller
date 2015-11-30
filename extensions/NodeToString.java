@@ -34,17 +34,24 @@ public class NodeToString extends MappingExtensionPoint {
 					result = column.getLeaves().get(2).getValue();
 					List<?> nodes2 = (List<?>) getParam(1);
 					Node name = (Node) nodes2.get(0);
-					result = result.replace("'", "") + ";POSTPROCESS_MOVE:" + name.getLeaves().get(0).getValue() + ",dataElement, data:RelationalTable;";						
+					result = result.replace("'", "") + ";DBLM_MOVE:" + name.getLeaves().get(0).getValue() + ",dataElement, data:RelationalTable;";						
 
 				}
 				else
 				{
 					EList<Element> children =column.getChildren();
 					Node n3 = (Node)children.get(3);
+					Leaf tbl = n3.getLeaves().get(0);
+					if (tbl.getKind().equals("Q3"))
+						tbl = n3.getLeaves().get(1);
 					Node n4 = (Node)children.get(1);
+					Leaf col = n4.getLeaves().get(0);
+					if (col.getKind().equals("Q3"))
+						col = n4.getLeaves().get(1);
+					
 					Leaf l = (Leaf)children.get(5);
-					result = l.getValue().replace("'", "") + ";POSTPROCESS_MOVE:" + n4.getLeaves().get(0).getValue() + "." + 
-							n3.getLeaves().get(0).getValue() +",itemUnit;";
+					result = l.getValue().replace("'", "") + ";DBLM_MOVE:" + col.getValue() + "." + 
+							tbl.getValue() +",itemUnit;";
 				}
 				
 				return returnString(result);
