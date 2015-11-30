@@ -37,7 +37,7 @@ public class OJDBCLogProcessor {
 		getOrderedQueryList(targetFile,new File("OrderedQueryList.csv"));
 		outputQueryTypeCounts("OrderedQueryList.csv", "Counts.csv");
 		resultsToCSV("OrderedQueryList.csv", "Measurements.csv", entity);
-		System.out.println("OJDBC log proccesing finished!");
+		System.out.println("OJDBC log processing finished!");
 	}
 		
 	
@@ -244,7 +244,7 @@ public class OJDBCLogProcessor {
 
 		List<String> lines = FileUtils.readLines(f);
 		System.out.println("\tLoaded:" + f.toString());
-		System.out.println("\tStarted Proccessing");
+		System.out.println("\tStarted Processing");
 		for (int i = 0; i < lines.size();i++)
 		{
 			String sql = "";

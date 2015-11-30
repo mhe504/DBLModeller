@@ -46,7 +46,7 @@ public class ModelRefiner{
 		
 		saveModel();
 		long endTime = System.currentTimeMillis() - startTime;
-		System.out.println("Model Refinement in " + endTime + " milisecs\n");
+		System.out.println("Model Refinement in " + endTime + " milliseconds\n");
 	}
 	
 

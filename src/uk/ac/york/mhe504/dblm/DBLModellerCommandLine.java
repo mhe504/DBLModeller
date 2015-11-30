@@ -156,7 +156,7 @@ public final class DBLModellerCommandLine {
 			interpreter.execute();
 			
 			long endTime = System.currentTimeMillis() - startTime;
-			System.out.println("Transformation completed in " + endTime + " milisecs\n");
+			System.out.println("Transformation completed in " + endTime + " milliseconds\n");
 			
 	    } catch (Exception ex){
 	        ex.printStackTrace();
