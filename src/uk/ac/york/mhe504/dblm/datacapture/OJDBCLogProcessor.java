@@ -91,13 +91,29 @@ public class OJDBCLogProcessor {
 			reads = writes = 0;
 			for (int i =2; i < file.size(); i++)
 			{
-				String sql = file.get(i);
-				if (sql.contains(databaseEntity))
+				String line = file.get(i);
+				dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.US);
+				Date date = null;
+				try{
+					date = dateFormat.parse(line.split(";")[0]);
+				}catch (ParseException e) {
+					try{
+						dateFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss aa", Locale.US);
+						date = dateFormat.parse(line.split(";")[0]);
+					}catch (ParseException e2) {
+						e2.printStackTrace();
+						System.out.println();
+					}
+				}
+				if (date.after(d) && date.before(end))
 				{
-					if (sql.matches(".*SELECT.*FROM.*"))		
-						reads++;
-					else if (sql.matches(".*INSERT INTO.*") || sql.matches(".*DELETE FROM.*") || sql.matches(".*MERGE INTO.*") || sql.matches(".*MERGE INTO.*") || sql.matches(".*UPDATE .*SET.*"))
-						writes++;
+					if (line.contains(databaseEntity))
+					{
+						if (line.matches(".*SELECT.*FROM.*"))		
+							reads++;
+						else if (line.matches(".*INSERT INTO.*") || line.matches(".*DELETE FROM.*") || line.matches(".*MERGE INTO.*") || line.matches(".*MERGE INTO.*") || line.matches(".*UPDATE .*SET.*"))
+							writes++;
+					}					
 				}
 			}
 			bufferWritter.write("[ALAIS]" + ", " + d.toString() + ", " + end.toString() + ",[ENTITY COUNT] ," + reads + ", " + writes + ",[UNUSED ENTITIES] ,[DB SIZE] \n");
