@@ -61,13 +61,17 @@ class Merger implements Runnable{
 				PrintWriter pw = new PrintWriter(args[3] + java.io.File.separator +tableName);
 				for (String dline : dumpFile)
 				{
+					boolean w = false;
 					for (String aline: accessFile)
 					{
 						if (aline.split("\t")[0].equals(dline))
+						{
+							w = true;
 							pw.println(aline);
-						else
-							pw.println(dline + "\t 0");
+						}
 					}
+					if (w==false)
+						pw.println(dline + "\t 0");
 				}
 				pw.close();
 			} catch (FileNotFoundException e) {

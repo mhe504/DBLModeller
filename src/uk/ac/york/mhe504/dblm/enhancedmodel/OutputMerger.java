@@ -40,7 +40,7 @@ public class OutputMerger {
 							if (records.containsKey(line))
 								records.put(line, records.get(line)+1);
 							else
-								records.put(line,0);
+								records.put(line,1);
 						}while (i+1 != file.size() && file.get(i+1).contains(","));
 					}
 				}
