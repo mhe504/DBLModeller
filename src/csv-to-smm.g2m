@@ -30,8 +30,9 @@ rule 'buildDirectMeasure1'
 	from file f
 	to smm::DirectMeasure
 	queries
+		scope: /f//#info_item[1];
 	mappings
-		name = "Secondary Storage Usage;DBLM_REF:trait,System Measures.Size,librairies.measureElements;;DBLM_REF:scope,System Measures.English Language Site,librairies.measureElements;";
+		name = "Secondary Storage Usage;DBLM_REF:trait,System Measures.Size,librairies.measureElements;;DBLM_REF:scope,System Measures." + scope.NAME + ",librairies.measureElements;";
         unit = "MB";
 end_rule
 
@@ -40,8 +41,9 @@ rule 'buildDirectMeasure2'
 	to smm::DirectMeasure
 	queries
 		entityType: /f//#info_item[2];
+		scope: /f//#info_item[1];
 	mappings
-		name = "Unused Entities;DBLM_REF:trait,System Measures.Number,librairies.measureElements;;DBLM_REF:scope,System Measures.English Language Site,librairies.measureElements;";
+		name = "Unused Entities;DBLM_REF:trait,System Measures.Number,librairies.measureElements;;DBLM_REF:scope,System Measures." + scope.NAME + ",librairies.measureElements;";
         unit = entityType.NAME;
 end_rule
 
@@ -50,8 +52,9 @@ rule 'buildCounting'
 	to smm::Counting
 	queries
 		entityType: /f//#info_item[2];
+		scope: /f//#info_item[1];
 	mappings
-		name = "Entities;DBLM_REF:trait,System Measures.Number,librairies.measureElements;;DBLM_REF:scope,System Measures.English Language Site,librairies.measureElements;";
+		name = "Entities;DBLM_REF:trait,System Measures.Number,librairies.measureElements;;DBLM_REF:scope,System Measures." + scope.NAME +",librairies.measureElements;";
         unit = entityType.NAME;
 end_rule
 
