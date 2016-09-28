@@ -78,7 +78,8 @@ public class OJDBCLogProcessor {
 		
 		FileWriter fw = new FileWriter(outputFile,true);
 		BufferedWriter bufferWritter = new BufferedWriter(fw);
-		bufferWritter.write("[SYSTEM NAME], [SCOPE], " + databaseEntity + "\n");
+		databaseEntity = databaseEntity.replace(".", "_");
+		bufferWritter.write("[SYSTEM NAME], [SCOPE], '" + databaseEntity + "'\n");
 				 
 		for (Date d : dates)
 		{
