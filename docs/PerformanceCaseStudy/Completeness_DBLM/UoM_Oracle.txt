@@ -1,0 +1,385 @@
+================== ELEMENT COUNTS =================
+SQL:			KDM:
+Tables:		9	RelationalTables:	9
+Columns:	92	ItemUnits:		92
+UKs:		12	UniqueKeys:		12
+Indexes:	0	IndexElements:		0
+Relationships:	13	KeyRelationships:	13
+Sequences:	7	SeqContents:		7
+Table Comments:	9	Annotations:		99
+Col Comments:	90
+==================================================
+
+========================== TABLES ==========================
+SQL CREATE TABLE:             KDM RelationalTable Elements: 
+OTG_ACTIVIDADES               OTG_ACTIVIDADES               
+OTG_MODALIDADES               OTG_MODALIDADES               
+OTG_PCONVOCATORIAS            OTG_PCONVOCATORIAS            
+OTG_TCONVOCATORIAS            OTG_TCONVOCATORIAS            
+OTG_SOLICITUDES               OTG_SOLICITUDES               
+OTG_PTCONVOCATORIAS           OTG_PTCONVOCATORIAS           
+OTG_CONVOCATORIAS             OTG_CONVOCATORIAS             
+OTG_PUBLICAOFI                OTG_PUBLICAOFI                
+OTG_TERCEROS                  OTG_TERCEROS                  
+============================================================
+Tables Match? true
+============================================================
+
+========================== COLUMNS ==========================
+SQL COLUMNS:                  KDM ItemUnit Elements:        
+ACT_CODIGO                    ACT_CODIGO                    
+ACT_CON_CODIGO                ACT_CON_CODIGO                
+ACT_CODIGOOTRI                ACT_CODIGOOTRI                
+ACT_NOMBRE                    ACT_NOMBRE                    
+ACT_DESCRIPCION               ACT_DESCRIPCION               
+ACT_DESTINATARIO              ACT_DESTINATARIO              
+ACT_OBJETIVOS                 ACT_OBJETIVOS                 
+ACT_CONDICIONES               ACT_CONDICIONES               
+ACT_FINANCIACION              ACT_FINANCIACION              
+ACT_TIPOSOLI                  ACT_TIPOSOLI                  
+ACT_MODALIDADES               ACT_MODALIDADES               
+LOG                           LOG                           
+ACT_DEDICA                    ACT_DEDICA                    
+MOD_CODIGO                    MOD_CODIGO                    
+MOD_ACT_CODIGO                MOD_ACT_CODIGO                
+MOD_CODIGOOTRI                MOD_CODIGOOTRI                
+MOD_NOMBRE                    MOD_NOMBRE                    
+MOD_DESCRIPCION               MOD_DESCRIPCION               
+MOD_DESTINATARIO              MOD_DESTINATARIO              
+MOD_OBJETIVOS                 MOD_OBJETIVOS                 
+MOD_FINANCIACION              MOD_FINANCIACION              
+MOD_CONDICIONES               MOD_CONDICIONES               
+LOG                           LOG                           
+MOD_DEDICA                    MOD_DEDICA                    
+PCO_CODIGO                    PCO_CODIGO                    
+PCO_ACT_CODIGO                PCO_ACT_CODIGO                
+PCO_MOD_CODIGO                PCO_MOD_CODIGO                
+PCO_FINIS                     PCO_FINIS                     
+PCO_FFINS                     PCO_FFINS                     
+PCO_FFINA                     PCO_FFINA                     
+PCO_ANO                       PCO_ANO                       
+PCO_FJUST                     PCO_FJUST                     
+TCO_CON_CODIGO                TCO_CON_CODIGO                
+TCO_TER_CODIGO                TCO_TER_CODIGO                
+TCO_PTC_CODIGO                TCO_PTC_CODIGO                
+SOL_CODIGO                    SOL_CODIGO                    
+SOL_CON_CODIGO                SOL_CON_CODIGO                
+SOL_ACT_CODIGO                SOL_ACT_CODIGO                
+SOL_MOD_CODIGO                SOL_MOD_CODIGO                
+SOL_PCO_CODIGO                SOL_PCO_CODIGO                
+SOL_TITULO                    SOL_TITULO                    
+SOL_FENTREGA                  SOL_FENTREGA                  
+SOL_ESO_CODIGO                SOL_ESO_CODIGO                
+SOL_FRES                      SOL_FRES                      
+SOL_FPUB                      SOL_FPUB                      
+SOL_DURACION                  SOL_DURACION                  
+SOL_UOR_CODIGO                SOL_UOR_CODIGO                
+SOL_IMP                       SOL_IMP                       
+SOL_MON_CODIGO                SOL_MON_CODIGO                
+SOL_IMPP                      SOL_IMPP                      
+SOL_IMPE                      SOL_IMPE                      
+SOL_APR_CODIGO                SOL_APR_CODIGO                
+SOL_COORDINADO                SOL_COORDINADO                
+SOL_SUP_CODIGO                SOL_SUP_CODIGO                
+SOL_FANUAL                    SOL_FANUAL                    
+SOL_SOL_CODIGO                SOL_SOL_CODIGO                
+SOL_PRO_CODIGO                SOL_PRO_CODIGO                
+SOL_CTR_CODIGO                SOL_CTR_CODIGO                
+SOL_MBE_CODIGO                SOL_MBE_CODIGO                
+SOL_IMPS                      SOL_IMPS                      
+SOL_MON_CODIGOS               SOL_MON_CODIGOS               
+SOL_IMPPS                     SOL_IMPPS                     
+SOL_IMPES                     SOL_IMPES                     
+SOL_IMPU                      SOL_IMPU                      
+SOL_MON_CODIGOU               SOL_MON_CODIGOU               
+SOL_IMPPU                     SOL_IMPPU                     
+SOL_IMPEU                     SOL_IMPEU                     
+SOL_TIPO                      SOL_TIPO                      
+SOL_PER_IDT                   SOL_PER_IDT                   
+SOL_PER_IDB                   SOL_PER_IDB                   
+LOG                           LOG                           
+PTC_CODIGO                    PTC_CODIGO                    
+PTC_NOMBRE                    PTC_NOMBRE                    
+CON_CODIGO                    CON_CODIGO                    
+CON_CODIGOOTRI                CON_CODIGOOTRI                
+CON_NOMBRE                    CON_NOMBRE                    
+CON_FPUB                      CON_FPUB                      
+CON_FRES                      CON_FRES                      
+CON_FCOR1                     CON_FCOR1                     
+CON_FCOR2                     CON_FCOR2                     
+CON_ACCESO                    CON_ACCESO                    
+CON_TIPO                      CON_TIPO                      
+CON_PUB_CODIGO                CON_PUB_CODIGO                
+LOG                           LOG                           
+CON_INFOR                     CON_INFOR                     
+CON_DEDICA                    CON_DEDICA                    
+CON_TIPOWEB                   CON_TIPOWEB                   
+CON_WEB                       CON_WEB                       
+PUB_CODIGO                    PUB_CODIGO                    
+PUB_NOMBRE                    PUB_NOMBRE                    
+TER_CODIGO                    TER_CODIGO                    
+TER_NOMBRE                    TER_NOMBRE                    
+===========================================================
+Columns Match? true
+============================================================
+
+========================== UKs ==========================
+SQL Unique + Primary Keys:    KDM UniqueKeys Elements:      
+ACT_CODIGO                    ACT_CODIGO                    
+MOD_CODIGO                    ACT_CODIGOOTRI                
+PCO_CODIGO                    MOD_CODIGO                    
+TCO_CON_CODIGO                MOD_CODIGOOTRI                
+SOL_CODIGO                    PCO_CODIGO                    
+PTC_CODIGO                    TCO_CON_CODIGO                
+CON_CODIGO                    SOL_CODIGO                    
+PUB_CODIGO                    PTC_CODIGO                    
+TER_CODIGO                    CON_CODIGO                    
+ACT_CODIGOOTRI                CON_CODIGOOTRI                
+MOD_CODIGOOTRI                PUB_CODIGO                    
+CON_CODIGOOTRI                TER_CODIGO                    
+==========================================================
+PKs Match? true
+==========================================================
+
+========================== Indexes ==========================
+SQL Indexes:                  KDM IndexElement:             
+=============================================================
+Indexes Match? true
+=============================================================
+
+========================== Sequences ==========================
+SQL CREATE SEQUENCE:          KDM SeqContent Elements:      
+S_ACT_CODIGO                  S_ACT_CODIGO                  
+S_MOD_CODIGO                  S_MOD_CODIGO                  
+S_PCO_CODIGO                  S_PCO_CODIGO                  
+S_SOL_CODIGO                  S_SOL_CODIGO                  
+S_CON_CODIGO                  S_CON_CODIGO                  
+S_PUB_CODIGO                  S_PUB_CODIGO                  
+S_TER_CODIGO                  S_TER_CODIGO                  
+===============================================================
+Sequences Match? true
+===============================================================
+
+======================================== Relationships =====================================
+SQL Relationships:                                KDM KeyRelationship Elements:                     
+OTG_ACTIVIDADES.ACT_CON_CODIGO;OTG_CONVOCATORIAS.CON_CODIGO           OTG_ACTIVIDADES.ACT_CON_CODIGO;OTG_CONVOCATORIAS.CON_CODIGO           
+OTG_MODALIDADES.MOD_ACT_CODIGO;OTG_ACTIVIDADES.ACT_CODIGO             OTG_MODALIDADES.MOD_ACT_CODIGO;OTG_ACTIVIDADES.ACT_CODIGO             
+OTG_PCONVOCATORIAS.PCO_ACT_CODIGO;OTG_ACTIVIDADES.ACT_CODIGO          OTG_PCONVOCATORIAS.PCO_ACT_CODIGO;OTG_ACTIVIDADES.ACT_CODIGO          
+OTG_PCONVOCATORIAS.PCO_MOD_CODIGO;OTG_MODALIDADES.MOD_CODIGO          OTG_PCONVOCATORIAS.PCO_MOD_CODIGO;OTG_MODALIDADES.MOD_CODIGO          
+OTG_TCONVOCATORIAS.TCO_CON_CODIGO;OTG_CONVOCATORIAS.CON_CODIGO        OTG_TCONVOCATORIAS.TCO_CON_CODIGO;OTG_CONVOCATORIAS.CON_CODIGO        
+OTG_TCONVOCATORIAS.TCO_PTC_CODIGO;OTG_PTCONVOCATORIAS.PTC_CODIGO      OTG_TCONVOCATORIAS.TCO_PTC_CODIGO;OTG_PTCONVOCATORIAS.PTC_CODIGO      
+OTG_TCONVOCATORIAS.TCO_TER_CODIGO;OTG_TERCEROS.TER_CODIGO             OTG_TCONVOCATORIAS.TCO_TER_CODIGO;OTG_TERCEROS.TER_CODIGO             
+OTG_SOLICITUDES.SOL_ACT_CODIGO;OTG_ACTIVIDADES.ACT_CODIGO             OTG_SOLICITUDES.SOL_ACT_CODIGO;OTG_ACTIVIDADES.ACT_CODIGO             
+OTG_SOLICITUDES.SOL_CON_CODIGO;OTG_CONVOCATORIAS.CON_CODIGO           OTG_SOLICITUDES.SOL_CON_CODIGO;OTG_CONVOCATORIAS.CON_CODIGO           
+OTG_SOLICITUDES.SOL_MOD_CODIGO;OTG_MODALIDADES.MOD_CODIGO             OTG_SOLICITUDES.SOL_MOD_CODIGO;OTG_MODALIDADES.MOD_CODIGO             
+OTG_SOLICITUDES.SOL_PCO_CODIGO;OTG_PCONVOCATORIAS.PCO_CODIGO          OTG_SOLICITUDES.SOL_PCO_CODIGO;OTG_PCONVOCATORIAS.PCO_CODIGO          
+OTG_SOLICITUDES.SOL_SOL_CODIGO;OTG_SOLICITUDES.SOL_CODIGO             OTG_SOLICITUDES.SOL_SOL_CODIGO;OTG_SOLICITUDES.SOL_CODIGO             
+OTG_CONVOCATORIAS.CON_PUB_CODIGO;OTG_PUBLICAOFI.PUB_CODIGO            OTG_CONVOCATORIAS.CON_PUB_CODIGO;OTG_PUBLICAOFI.PUB_CODIGO            
+============================================================================================
+Relationships Match? true
+============================================================================================
+========================== Comments =============================
+SQL Table and Column Comments:
+Actividades (convocatorias)
+Modalidades (Actividades de convocatorias)
+Plazos de las convocatorias
+Terceros (Convocatorias)
+Modos de  participaciÃ³n (Terceros)
+Solicitudes de convocatorias nacionales
+Convocatorias Nacionales
+Publicaciones Oficiales
+Personas (Terceros)
+CÃ³digo Interno (Secuencia S_ACT_CODIGO)
+CÃ³digo O.T.R.I.
+CÃ³digo de la convocatoria (FK - OTG_CONVOCATORIAS)
+Condiciones
+Contabilidad horaria
+DescripciÃ³n
+Destinatarios
+FinanciaciÃ³n
+Actividad con modalidades (S, N)
+Nombre
+Objetivos
+Tipo de solicitud (P : Proyecto, B : Beca, I : Infraestructura, V : Viaje)
+CÃ³digo LOG
+CÃ³digo Log
+CÃ³digo de la Acitvidad (FK - OTG_ACTIVIDADES)
+CÃ³digo Interno (Secuencia S_MOD_CODIGO)
+CÃ³digo O.T.R.I.
+Condiciones
+Contabilidad horaria
+DescripciÃ³n
+Destinatarios
+FinanciaciÃ³n
+Nombre
+Objetivos
+CÃ³digo de la actividad (FK - OTG_ACTIVIDADES)
+AÃ±o de la convocatoria
+CÃ³digo Interno (Secuencia S_PCO_CODIGO)
+Fecha fin de aceptaciÃ³n O.T.R.I.
+Fecha fin de solicitud
+Fecha inicio de solicitud
+Plazo de JustificaciÃ³n
+CÃ³digo de la Modalidad (FK -  OTG_MODALIDADES)
+CÃ³digo de la convocatoria (FK - OTG_CONVOCATORIAS)
+CÃ³digo del tipo de participaciÃ³n (FK - OTG_PTCONVOCATORIAS)
+CÃ³digo del tercero (FK - OTG_TERCEROS)
+CÃ³digo Interno
+Nombre
+CÃ³digo Log
+CÃ³digo de la actividad (FK - OTG_ACTIVIDADES)
+CÃ³digo del Ã¡rea productiva (FK - OTG_APRODUCTIVAS)
+CÃ³digo Interno (Secuencia S_SOL_CODIGO)
+CÃ³digo de la convocatoria (FK - OTG_CONVOCATORIAS)
+Coordinado (S, N)
+CÃ³digo del contrato asociado.- Becas (FK - OTG_CONTRATOS)
+DuraciÃ³n en meses
+CÃ³digo del estado de la solicitud (FK - OTG_ESOLICITUDES)
+Fechas por anualidades (S, N)
+Fecha de entrega
+Fecha de publicaciÃ³n (Solicitudes aprobadas)
+Fecha de resoluciÃ³n (Solicitudes Aprobadas)
+Importe solicitado
+Importe en euros
+Importe en euros de subvenciÃ³n .- Infraestructuras
+Importe en euros de U.H.M. .- Infraestructuras
+Importe en pesetas
+Importe en pesetas de subvenciÃ³n .- Infraestructuras
+Importe en pesetas de U.H.M. .- Infraestructuras
+Importe subvenciÃ³n.- Infraestructuras
+Importe U.M.H. .- Infraestructuras
+CÃ³digo de la Modalidad de la Beca (FK - OTG_MBECAS)
+CÃ³digo de la modalidad (FK - OTG_MODALIDADES)
+CÃ³digo de moneda (FK - OTG_MONEDAS)
+CÃ³digo de moneda subvenciÃ³n .- Infraestructuras (FK - OTG_MONEDAS)
+CÃ³digo de moneda U.M.H. - Infraestructuras (FK - OTG_MONEDAS)
+CÃ³digo del plazo de convocatoria (FK - OTG_PCONVOCATORIAS)
+Identificador del Becario .- Becas (FK - OTG_PERSONAS)
+Identificador del tutor .- Becas (FK - OTG_PERSONAS)
+CÃ³digo del proyecto asociado.- Becas (FK - OTG_PROYECTOS)
+CÃ³digo del proyecto solicitado asociado.- Becas (FK - OTG_SOLICITUDES)
+CÃ³digo del Macro-proyecto (FK - OTG_SUPERPROYECTOS)
+Tipo de solicitud (P: Proyecto, B: Beca, V: Viaje, I: Infraestructura)
+TÃ­tulo
+CÃ³digo de la Unidad Organizativa solicitante (FK - GEA_UORGANIZATIVA)
+Lugar donde se encuentra accesible la documentaciÃ³n
+CÃ³digo Interno (Secuencia S_CON_CODIGO)
+CÃ³digo O.T.R.I.
+Obsoleto
+Fecha de 1Âº correcciÃ³n
+Fecha de 2Âº correcciÃ³n
+Fecha de publicaciÃ³n
+Fecha de resoluciÃ³n
+LocalizaciÃ³n de informaciÃ³n
+Nombre
+CÃ³digo de la PublicaciÃ³n Oficial (FK - OTG_PUBLICAOFI)
+Tipo de Convocatoria (R: Regional, N: Nacional)
+CÃ³digo Log
+CÃ³digo Intero (Secuencia S_PUB_CODIGO)
+Nombre
+CÃ³digo Interno (Secuencia S_TER_CODIGO)
+Nombre
+
+KDM Annotation Elements:
+CÃ³digo Interno (Secuencia S_ACT_CODIGO)
+CÃ³digo de la convocatoria (FK - OTG_CONVOCATORIAS)
+CÃ³digo O.T.R.I.
+Nombre
+DescripciÃ³n
+Destinatarios
+Objetivos
+Condiciones
+FinanciaciÃ³n
+Tipo de solicitud (P : Proyecto, B : Beca, I : Infraestructura, V : Viaje)
+Actividad con modalidades (S, N)
+CÃ³digo LOG
+Contabilidad horaria
+Actividades (convocatorias)
+CÃ³digo Interno (Secuencia S_MOD_CODIGO)
+CÃ³digo de la Acitvidad (FK - OTG_ACTIVIDADES)
+CÃ³digo O.T.R.I.
+Nombre
+DescripciÃ³n
+Destinatarios
+Objetivos
+FinanciaciÃ³n
+Condiciones
+CÃ³digo Log
+Contabilidad horaria
+Modalidades (Actividades de convocatorias)
+CÃ³digo Interno (Secuencia S_PCO_CODIGO)
+CÃ³digo de la actividad (FK - OTG_ACTIVIDADES)
+CÃ³digo de la Modalidad (FK -  OTG_MODALIDADES)
+Fecha inicio de solicitud
+Fecha fin de solicitud
+Fecha fin de aceptaciÃ³n O.T.R.I.
+AÃ±o de la convocatoria
+Plazo de JustificaciÃ³n
+Plazos de las convocatorias
+CÃ³digo de la convocatoria (FK - OTG_CONVOCATORIAS)
+CÃ³digo del tercero (FK - OTG_TERCEROS)
+CÃ³digo del tipo de participaciÃ³n (FK - OTG_PTCONVOCATORIAS)
+Terceros (Convocatorias)
+CÃ³digo Interno (Secuencia S_SOL_CODIGO)
+CÃ³digo de la convocatoria (FK - OTG_CONVOCATORIAS)
+CÃ³digo de la actividad (FK - OTG_ACTIVIDADES)
+CÃ³digo de la modalidad (FK - OTG_MODALIDADES)
+CÃ³digo del plazo de convocatoria (FK - OTG_PCONVOCATORIAS)
+TÃ­tulo
+Fecha de entrega
+CÃ³digo del estado de la solicitud (FK - OTG_ESOLICITUDES)
+Fecha de resoluciÃ³n (Solicitudes Aprobadas)
+Fecha de publicaciÃ³n (Solicitudes aprobadas)
+DuraciÃ³n en meses
+CÃ³digo de la Unidad Organizativa solicitante (FK - GEA_UORGANIZATIVA)
+Importe solicitado
+CÃ³digo de moneda (FK - OTG_MONEDAS)
+Importe en pesetas
+Importe en euros
+CÃ³digo del Ã¡rea productiva (FK - OTG_APRODUCTIVAS)
+Coordinado (S, N)
+CÃ³digo del Macro-proyecto (FK - OTG_SUPERPROYECTOS)
+Fechas por anualidades (S, N)
+CÃ³digo del proyecto solicitado asociado.- Becas (FK - OTG_SOLICITUDES)
+CÃ³digo del proyecto asociado.- Becas (FK - OTG_PROYECTOS)
+CÃ³digo del contrato asociado.- Becas (FK - OTG_CONTRATOS)
+CÃ³digo de la Modalidad de la Beca (FK - OTG_MBECAS)
+Importe subvenciÃ³n.- Infraestructuras
+CÃ³digo de moneda subvenciÃ³n .- Infraestructuras (FK - OTG_MONEDAS)
+Importe en pesetas de subvenciÃ³n .- Infraestructuras
+Importe en euros de subvenciÃ³n .- Infraestructuras
+Importe U.M.H. .- Infraestructuras
+CÃ³digo de moneda U.M.H. - Infraestructuras (FK - OTG_MONEDAS)
+Importe en pesetas de U.H.M. .- Infraestructuras
+Importe en euros de U.H.M. .- Infraestructuras
+Tipo de solicitud (P: Proyecto, B: Beca, V: Viaje, I: Infraestructura)
+Identificador del tutor .- Becas (FK - OTG_PERSONAS)
+Identificador del Becario .- Becas (FK - OTG_PERSONAS)
+CÃ³digo Log
+Solicitudes de convocatorias nacionales
+CÃ³digo Interno
+Nombre
+Modos de  participaciÃ³n (Terceros)
+CÃ³digo Interno (Secuencia S_CON_CODIGO)
+CÃ³digo O.T.R.I.
+Nombre
+Fecha de publicaciÃ³n
+Fecha de resoluciÃ³n
+Fecha de 1Âº correcciÃ³n
+Fecha de 2Âº correcciÃ³n
+Lugar donde se encuentra accesible la documentaciÃ³n
+Tipo de Convocatoria (R: Regional, N: Nacional)
+CÃ³digo de la PublicaciÃ³n Oficial (FK - OTG_PUBLICAOFI)
+CÃ³digo Log
+LocalizaciÃ³n de informaciÃ³n
+Obsoleto
+Convocatorias Nacionales
+CÃ³digo Intero (Secuencia S_PUB_CODIGO)
+Nombre
+Publicaciones Oficiales
+CÃ³digo Interno (Secuencia S_TER_CODIGO)
+Nombre
+Personas (Terceros)
+=================================================================
+Comments Match? true
+=================================================================
